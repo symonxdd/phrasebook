@@ -3,16 +3,20 @@
     <div class="top-bar">
       <input v-model="searchQuery" class="search-bar" placeholder="Search terms..." />
       <div class="view-toggle">
+        <button @click="viewMode = 'masonry'" :class="{ active: viewMode === 'masonry' }">
+          <i class="bi bi-grid-3x3-gap"></i>
+        </button>
         <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }">
           <i class="bi bi-list-ul"></i>
-        </button>
-        <button @click="viewMode = 'grid'" :class="{ active: viewMode === 'grid' }">
-          <i class="bi bi-grid-3x3-gap"></i>
         </button>
       </div>
     </div>
 
-    <div :class="viewMode === 'list' ? 'terms-list' : 'terms-grid'">
+    <masonry v-if="viewMode === 'masonry'" :cols="3" :gutter="10">
+      <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
+    </masonry>
+
+    <div v-if="viewMode === 'list'" class="terms-list">
       <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
     </div>
 
@@ -29,7 +33,7 @@ import TermItem from "./TermItem.vue";
 
 const terms = ref([]);
 const searchQuery = ref("");
-const viewMode = ref("grid"); // Default to list view
+const viewMode = ref("masonry");
 
 onMounted(async () => {
   terms.value = await invoke("load_terms");
@@ -67,21 +71,19 @@ const filteredTerms = computed(() =>
 
 .view-toggle {
   display: flex;
-  gap: 5px;
 }
 
 .view-toggle button {
-  background: transparent;
-  border: none;
   color: #777;
   font-size: 1.2rem;
-  cursor: pointer;
+  cursor: default;
   transition: color 0.2s, transform 0.1s;
+  padding: 0 10px;
+  background: transparent;
 }
 
 .view-toggle button:hover {
   color: #bbb;
-  /* transform: scale(1.1); */
 }
 
 .view-toggle button:active {
@@ -97,15 +99,6 @@ const filteredTerms = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-/* Grid View */
-.terms-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-  align-items: start;
-  /* This ensures that each card only spans the height it needs */
 }
 
 .add-button {
