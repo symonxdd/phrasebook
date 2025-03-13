@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "phrasebook",
+  "productName": "Phrasebook",
   "version": "0.1.0",
   "identifier": "com.phrasebook.app",
   "build": {
@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "phrasebook",
+        "title": "Phrasebook",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "center": true,
+        "backgroundColor": "#121212"
       }
     ],
     "security": {

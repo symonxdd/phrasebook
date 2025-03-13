@@ -38,8 +38,6 @@ async function loadTerms() {
 .app-container {
   background: #121212;
   color: #fff;
-  font-family: "Inter", sans-serif;
-  height: 100vh;
-  padding: 20px;
+  padding: 10px;
 }
 </style>
