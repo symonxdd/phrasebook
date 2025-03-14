@@ -28,8 +28,7 @@ const navItems = [
 .sidebar {
   width: 250px;
   min-width: 250px;
-
-  background: #1a1a1a;
+  background-color: #121212;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -43,12 +42,12 @@ const navItems = [
 }
 
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 10px 12px;
+  padding: 10px 24px;
   color: #ddd;
   font-size: 0.9rem;
-  cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s, color 0.2s;
   margin-bottom: 8px;
@@ -64,9 +63,31 @@ const navItems = [
 }
 
 .nav-item.active {
-  background: #3a3a3a;
   color: #fff;
   font-weight: bold;
+  background: transparent;
+}
+
+.nav-item::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  /* Start with 0 width */
+  height: 60%;
+  background-color: #FF3214;
+  border-radius: 6px;
+  opacity: 0;
+  /* Start with 0 opacity */
+  transition: width 0.3s ease, opacity 0.3s ease;
+  /* Smooth transition */
+}
+
+.nav-item.active::before {
+  opacity: 1;
+  /* End with full opacity */
 }
 
 .nav-icon {

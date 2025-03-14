@@ -22,6 +22,7 @@ body {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
+  cursor: default;
 }
 
 /* Global link styling */
@@ -37,7 +38,6 @@ a:hover {
 
 /* Button Defaults */
 button {
-  cursor: pointer;
   border: none;
   font-size: 1rem;
   font-weight: bold;

@@ -19,10 +19,6 @@
     <div v-if="viewMode === 'list'" class="terms-list">
       <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
     </div>
-
-    <button @click="$router.push('/add')" class="add-button">
-      <i class="bi bi-plus-lg"></i>
-    </button>
   </div>
 </template>
 
@@ -118,27 +114,5 @@ const filteredTerms = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.add-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #6a11cb;
-  color: white;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border: none;
-  cursor: pointer;
-}
-
-.add-button:hover {
-  background: #570fc5;
 }
 </style>
