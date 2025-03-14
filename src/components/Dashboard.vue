@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <masonry v-if="viewMode === 'masonry'" :cols="3" :gutter="10">
+    <masonry v-if="viewMode === 'masonry'" :cols="cols" :gutter="10">
       <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
     </masonry>
 
@@ -27,16 +27,35 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import TermItem from "./TermItem.vue";
 
 const terms = ref([]);
 const searchQuery = ref("");
 const viewMode = ref("masonry");
+const cols = ref(getCols()); // Dynamic column count
+
+function getCols() {
+  if (window.innerWidth > 2000) return 6;
+  if (window.innerWidth > 1600) return 5;
+  if (window.innerWidth > 1200) return 4;
+  if (window.innerWidth > 800) return 3;
+  if (window.innerWidth > 600) return 2;
+  return 1;
+}
+
+function updateCols() {
+  cols.value = getCols();
+}
 
 onMounted(async () => {
   terms.value = await invoke("load_terms");
+  window.addEventListener("resize", updateCols);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateCols);
 });
 
 const filteredTerms = computed(() =>
