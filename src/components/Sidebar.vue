@@ -2,26 +2,30 @@
   <nav class="sidebar">
     <TitleLogo />
     <ul class="nav-list">
-      <template v-for="(item, index) in navItems" :key="item.path">
-        <li class="nav-item" :class="{ active: $route.path === item.path }" @click="$router.push(item.path)">
-          <i :class="item.icon" class="nav-icon"></i>
-          <span class="nav-text">{{ item.label }}</span>
-        </li>
+      <li class="nav-item" :class="{ active: $route.path === '/' }" @click="$router.push('/')">
+        <i class="bi bi-house-door nav-icon"></i>
+        <span class="nav-text">Home</span>
+      </li>
 
-        <div v-if="index === 1" class="nav-separator"></div>
-      </template>
+      <li class="nav-item" :class="{ active: $route.path === '/favorites' }" @click="$router.push('/favorites')">
+        <i class="bi bi-star nav-icon"></i>
+        <span class="nav-text">Favorites</span>
+      </li>
+
+      <!-- <div class="nav-separator"></div> -->
     </ul>
+
+    <div class="nav-bottom">
+      <li class="nav-item" :class="{ active: $route.path === '/settings' }" @click="$router.push('/settings')">
+        <i class="bi bi-gear nav-icon"></i>
+        <span class="nav-text">Settings</span>
+      </li>
+    </div>
   </nav>
 </template>
 
 <script setup>
 import TitleLogo from './TitleLogo.vue';
-
-const navItems = [
-  { path: '/', label: 'Home', icon: 'bi bi-house-door' },
-  { path: '/favorites', label: 'Favorites', icon: 'bi bi-star' },
-  { path: '/settings', label: 'Settings', icon: 'bi bi-gear' }
-];
 </script>
 
 <style scoped>
@@ -36,9 +40,14 @@ const navItems = [
 }
 
 .nav-list {
+  flex-grow: 1;
   list-style: none;
   padding: 0;
   margin-top: 20px;
+}
+
+.nav-bottom {
+  margin-top: auto;
 }
 
 .nav-item {
