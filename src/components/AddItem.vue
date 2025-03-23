@@ -15,12 +15,18 @@
         <input v-model="newTerm.extra" id="extra" type="text" />
       </div>
       <div>
-        <label for="category">Category</label>
+        <label for="category">Group</label>
         <select v-model="newTerm.category" id="category">
-          <option value="Terms">Terms</option>
-          <option value="Concepts">Concepts</option>
-          <option value="Sentencology">Sentencology</option>
+          <option disabled value="">Select group</option>
+          <option v-for="group in groups" :key="group.title" :value="group.title">
+            {{ group.title }}
+          </option>
+          <option value="__create_new__">+ Create new group...</option>
         </select>
+      </div>
+      <div v-if="newTerm.category === '__create_new__'">
+        <label for="newGroup">New group name</label>
+        <input id="newGroup" v-model="newGroupName" @blur="createNewGroup" />
       </div>
       <div>
         <label for="tags">Tags (comma separated)</label>
@@ -34,7 +40,7 @@
 
 <script setup>
 import { invoke } from "@tauri-apps/api/core";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['term-added', 'cancel']);
 
@@ -45,6 +51,8 @@ const newTerm = ref({
   category: 'Terms',
   tags: []
 });
+const newGroupName = ref('');
+const groups = ref([]);
 
 async function addTerm() {
   try {
@@ -57,6 +65,19 @@ async function addTerm() {
 
   newTerm.value = { term: '', meaning: '', extra: '', category: 'Terms', tags: [] }; // Reset form
 }
+
+async function createNewGroup() {
+  if (newGroupName.value.trim() !== '') {
+    await invoke('save_group', { group: { title: newGroupName.value.trim() } })
+    groups.value = await invoke('load_groups')
+    newTerm.value.category = newGroupName.value.trim()
+    newGroupName.value = ''
+  }
+}
+
+onMounted(async () => {
+  groups.value = await invoke('load_groups')
+})
 </script>
 
 <style scoped>
@@ -74,18 +95,29 @@ label {
   display: block;
 }
 
-input,
-select {
-  margin-top: 5px;
-}
-
 button {
-  background-color: #202020;
-  color: white;
-  cursor: pointer;
+  width: fit-content;
+  padding: 6px 12px;
 }
 
 button:hover {
   background-color: #6c3483;
+}
+
+.add-item form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 400px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 6px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #ddd;
+  border-radius: 4px;
 }
 </style>

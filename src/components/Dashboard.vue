@@ -1,62 +1,44 @@
 <template>
   <div class="dashboard">
-    <div class="top-bar">
-      <input v-model="searchQuery" class="search-bar" placeholder="Search terms..." />
-      <div class="view-toggle">
-        <button @click="viewMode = 'masonry'" :class="{ active: viewMode === 'masonry' }">
-          <i class="bi bi-grid-3x3-gap"></i>
-        </button>
-        <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }">
-          <i class="bi bi-list-ul"></i>
-        </button>
+    <div class="title title-categories">Categories</div>
+    <div class="pill-container">
+      <div v-for="category in categories" :key="category.name" class="pill category-pill"
+        @click="navigateToTerms(category.name, 'category')">
+        {{ category.name }}
       </div>
     </div>
 
-    <masonry v-if="viewMode === 'masonry'" :cols="cols" :gutter="10">
-      <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
-    </masonry>
-
-    <div v-if="viewMode === 'list'" class="terms-list">
-      <TermItem v-for="term in filteredTerms" :key="term.term" :term="term" />
+    <div class="title title-groups">Groups</div>
+    <div class="pill-container">
+      <div v-for="group in groups" :key="group.name" class="pill group-pill"
+        @click="navigateToTerms(group.name, 'group')">
+        {{ group.name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
-import TermItem from "./TermItem.vue";
+import { useRouter } from 'vue-router';
+import { useFilterStore } from '../stores/filters';
 
-const terms = ref([]);
-const searchQuery = ref("");
-const viewMode = ref("masonry");
-const cols = ref(getCols()); // Dynamic column count
-
-function getCols() {
-  if (window.innerWidth > 2000) return 6;
-  if (window.innerWidth > 1600) return 5;
-  if (window.innerWidth > 1200) return 4;
-  if (window.innerWidth > 800) return 3;
-  if (window.innerWidth > 600) return 2;
-  return 1;
-}
-
-function updateCols() {
-  cols.value = getCols();
-}
+const filters = useFilterStore();
+const categories = ref([]);
+const groups = ref([]);
+const router = useRouter();
 
 onMounted(async () => {
-  terms.value = await invoke("load_terms");
-  window.addEventListener("resize", updateCols);
+  categories.value = await invoke("load_categories");
+  groups.value = await invoke("load_groups");
+  console.log("categories: ", categories.value);
+  console.log("groups:", groups.value);
 });
 
-onUnmounted(() => {
-  window.removeEventListener("resize", updateCols);
-});
-
-const filteredTerms = computed(() =>
-  terms.value.filter(term => term.term.toLowerCase().includes(searchQuery.value.toLowerCase()))
-);
+function navigateToTerms(name, type) {
+  router.push({ name: 'terms-view', query: { name, type } });
+}
 </script>
 
 <style scoped>
@@ -66,53 +48,46 @@ const filteredTerms = computed(() =>
   padding: 10px;
 }
 
-.top-bar {
+.title {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 21px;
+  color: #979797;
+}
+
+.title-categories {
+  margin-top: 50px;
+}
+
+.title-groups {
+  margin-top: 80px;
+}
+
+.pill-container {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  /* margin-bottom: 50px; */
 }
 
-.search-bar {
-  flex-grow: 1;
-  padding: 10px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  background: #222;
-  color: #ddd;
-  outline: none;
+.pill {
+  background-color: #1f1f1f;
+  border: 1px solid #1f1f1f;
+  color: #a5a5a5;
+  border-radius: 21px;
+  transition: 0.2s;
 }
 
-.view-toggle {
-  display: flex;
+.pill:hover {
+  border: 1px solid #4b4b4b;
 }
 
-.view-toggle button {
-  color: #777;
-  font-size: 1.2rem;
-  cursor: default;
-  transition: color 0.2s, transform 0.1s;
-  padding: 0 10px;
-  background: transparent;
+.category-pill {
+  padding: 8px 12px;
 }
 
-.view-toggle button:hover {
-  color: #bbb;
-}
-
-.view-toggle button:active {
-  transform: scale(0.95);
-}
-
-.view-toggle button.active {
-  color: white;
-}
-
-/* List View */
-.terms-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.group-pill {
+  padding: 8px 12px;
 }
 </style>

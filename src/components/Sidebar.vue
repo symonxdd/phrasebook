@@ -1,6 +1,9 @@
 <template>
   <nav class="sidebar">
     <TitleLogo />
+
+    <input v-model="filters.searchQuery" class="sidebar-search-bar" placeholder="Search terms..." />
+
     <ul class="nav-list">
       <li class="nav-item" :class="{ active: $route.path === '/' }" @click="$router.push('/')">
         <i class="bi bi-house-door nav-icon"></i>
@@ -26,6 +29,8 @@
 
 <script setup>
 import TitleLogo from './TitleLogo.vue';
+import { useFilterStore } from '../stores/filters'
+const filters = useFilterStore()
 </script>
 
 <style scoped>
@@ -113,5 +118,20 @@ import TitleLogo from './TitleLogo.vue';
   background: rgba(255, 255, 255, 0.1);
   margin: 10px 0;
   width: 100%;
+}
+
+.sidebar-search-bar {
+  width: 100%;
+  margin: 20px 0 10px 0;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: none;
+  background: #222;
+  color: #ddd;
+  outline: none;
+}
+
+.sidebar-search-bar:focus {
+  background: #2b2b2b;
 }
 </style>

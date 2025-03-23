@@ -1,12 +1,7 @@
 <template>
   <div class="welcome-screen">
-    <!-- Animated Gradient Title -->
     <h1 class="title">Phrasebook</h1>
-
-    <!-- Subtitle -->
     <p class="subtitle">Sapientia, Verbum, Intellectus</p>
-
-    <!-- Select Folder Button -->
     <button @click="$emit('add-first-item')" class="add-first-item-button">
       Add first item
     </button>

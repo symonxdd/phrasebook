@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    phrasebook_lib::run()
+  phrasebook_lib::run()
 }
