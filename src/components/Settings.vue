@@ -1,14 +1,29 @@
 <template>
-  <div class="settings">
-    <button class="add-btn" @click="$router.push('/add')">
-      <i class="bi bi-plus-circle"></i>
-      <span>Add new term</span>
-    </button>
+  <div class="settings container">
+    <!-- Open Install Folder Section -->
+    <div class="setting-group">
+      <h5>Open install folder</h5>
+      <button class="btn open-btn" @click="openAppLocalAppData">
+        <i class="bi bi-folder"></i>
+        <span>Open</span>
+      </button>
+    </div>
 
-    <button class="open-install-btn" @click="openAppLocalAppData">
-      <i class="bi bi-folder"></i>
-      <span>Open app resources</span>
-    </button>
+    <!-- Add & Import Section -->
+    <div class="setting-group">
+      <h5>Add & Import</h5>
+      <div class="btn-group">
+        <button class="btn import-btn" @click="$router.push('/import')">
+          <i class="bi bi-file-earmark-arrow-up"></i>
+          <span>Import</span>
+        </button>
+
+        <button class="btn add-btn" @click="$router.push('/add')">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add manually</span>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,31 +41,52 @@ const openAppLocalAppData = async () => {
 <style scoped>
 .settings {
   padding: 20px;
-  color: white;
+  color: #333;
 }
 
-.add-btn,
-.open-install-btn {
+.setting-group {
+  margin-bottom: 24px;
+}
+
+h5 {
+  font-size: 0.95rem;
+  color: #adadad;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.btn {
+  background-color: transparent;
+  color: #adadad;
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid #FF3214;
-  background: transparent;
-  color: #fff;
   padding: 8px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  font-weight: 400;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  color: #333;
+  border: 1px solid #363636;
 }
 
-.add-btn:hover,
-.open-install-btn:hover {
-  background: #FF3214;
-  color: #fff;
+.btn span {
+  font-size: 0.92rem;
+  color: #adadad;
+  margin-left: 2px;
 }
 
-.add-btn:active,
-.open-install-btn:active {
-  background: #d72b10;
+.btn i {
+  font-size: 1.1rem;
+  color: #adadad;
+}
+
+.btn:hover {
+  background-color: #2b2b2b;
+  /* color: #d6d6d6; */
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
 }
 </style>

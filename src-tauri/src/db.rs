@@ -15,16 +15,16 @@ pub async fn init_db() -> SqlitePool {
   let db_path = get_app_localappdata().replace("\\", "/");
   let db_name = "data.db";
 
-  println!("Using SQLite DB at: {}/{}", db_path, db_name);
+  println!("🗃️  Using SQLite DB at: {}/{}", db_path, db_name);
 
-  let options = SqliteConnectOptions::new()
+  let connection = SqliteConnectOptions::new()
     .create_if_missing(true)
     .filename(&format!("{}/{}", db_path, db_name));
 
   // Establish a connection pool (max 5 connections), creating the DB file if it doesn't exist
   let pool = SqlitePoolOptions::new()
     .max_connections(5)
-    .connect_with(options)
+    .connect_with(connection)
     .await
     .expect("Failed to connect to database");
 

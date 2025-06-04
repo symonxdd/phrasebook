@@ -37,8 +37,8 @@ onMounted(async () => {
 async function loadTerms() {
   try {
     appStore.terms = await invoke('load_terms');
-    appStore.categories = await invoke("load_categories");
-    appStore.groups = await invoke("load_groups");
+    // appStore.categories = await invoke("load_categories");
+    // appStore.groups = await invoke("load_groups");
     console.log("Loaded terms:", appStore.terms);
   } catch (error) {
     console.log("Failed to load terms:", error);

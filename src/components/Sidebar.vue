@@ -2,8 +2,6 @@
   <nav class="sidebar">
     <TitleLogo />
 
-    <input v-model="filters.searchQuery" class="sidebar-search-bar" placeholder="Search terms..." />
-
     <ul class="nav-list">
       <li class="nav-item" :class="{ active: $route.path === '/' }" @click="$router.push('/')">
         <i class="bi bi-house-door nav-icon"></i>
@@ -60,7 +58,7 @@ const filters = useFilterStore()
   display: flex;
   align-items: center;
   padding: 10px 24px;
-  color: #ddd;
+  color: #919191;
   font-size: 0.9rem;
   border-radius: 6px;
   transition: background 0.2s, color 0.2s;
@@ -69,7 +67,7 @@ const filters = useFilterStore()
 
 .nav-item:hover {
   background: #2a2a2a;
-  color: white;
+  color: #bbbbbb;
 }
 
 .nav-item:active {
@@ -77,8 +75,8 @@ const filters = useFilterStore()
 }
 
 .nav-item.active {
-  color: #fff;
-  font-weight: bold;
+  color: #919191;
+  /* font-weight: bold; */
   background: transparent;
 }
 
@@ -91,7 +89,8 @@ const filters = useFilterStore()
   width: 4px;
   /* Start with 0 width */
   height: 60%;
-  background-color: #FF3214;
+  background-color: #a11a05;
+  /* FF3214 */
   border-radius: 6px;
   opacity: 0;
   /* Start with 0 opacity */
@@ -118,20 +117,5 @@ const filters = useFilterStore()
   background: rgba(255, 255, 255, 0.1);
   margin: 10px 0;
   width: 100%;
-}
-
-.sidebar-search-bar {
-  width: 100%;
-  margin: 20px 0 10px 0;
-  padding: 8px 10px;
-  border-radius: 4px;
-  border: none;
-  background: #222;
-  color: #ddd;
-  outline: none;
-}
-
-.sidebar-search-bar:focus {
-  background: #2b2b2b;
 }
 </style>

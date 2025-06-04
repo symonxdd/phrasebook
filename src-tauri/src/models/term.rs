@@ -6,8 +6,12 @@ pub struct Term {
   pub term: String,
   pub meaning: String,
   pub extra: Option<String>,
-  pub category: Option<String>,
-  pub group: Option<String>,
+
+  pub category_id: Option<i32>, // FIXED: INTEGER instead of TEXT
+  pub group_id: Option<i32>,    // FIXED: INTEGER instead of TEXT
+
+  // pub category: Option<String>,
+  // pub group: Option<String>,
   #[sqlx(try_from = "String")]
   pub tags: Tags,
 }

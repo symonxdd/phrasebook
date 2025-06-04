@@ -1,7 +1,7 @@
 <template>
   <div class="term-card">
     <p class="term-line">
-      <span class="term">{{ term.term }}</span>:
+      <span class="term">{{ term.term }}: </span>
       <span class="meaning">{{ term.meaning }}</span>
     </p>
     <small class="extra" v-if="term.extra">{{ term.extra }}</small>
@@ -36,7 +36,7 @@ defineProps(["term"]);
 .term {
   font-size: 0.85rem;
   font-weight: bold;
-  color: #f1f1f1;
+  color: #b8b8b8;
 }
 
 .meaning {
