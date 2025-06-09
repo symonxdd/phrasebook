@@ -1,38 +1,78 @@
--- Ensure foreign key support is enabled
-PRAGMA foreign_keys = ON;
+-- =============================================
+-- Sample Data Seeding Script for Multilingual DB
+-- =============================================
 
--- Insert sample data into groups table
-INSERT INTO groups (name) VALUES ('Technology') ON CONFLICT(name) DO NOTHING;
-INSERT INTO groups (name) VALUES ('Science') ON CONFLICT(name) DO NOTHING;
-INSERT INTO groups (name) VALUES ('Arts') ON CONFLICT(name) DO NOTHING;
+-- -------------------------------
+-- Insert Supported Languages
+-- -------------------------------
+INSERT INTO language (code, name) VALUES
+    ('en', 'English'),
+    ('fr', 'French'),
+    ('de', 'German'),
+    ('es', 'Spanish');
 
--- Insert sample data into categories table
-INSERT INTO categories (name) VALUES ('Programming Languages') ON CONFLICT(name) DO NOTHING;
-INSERT INTO categories (name) VALUES ('Physics') ON CONFLICT(name) DO NOTHING;
-INSERT INTO categories (name) VALUES ('Visual Arts') ON CONFLICT(name) DO NOTHING;
+-- -------------------------------
+-- Insert Entry Groups
+-- -------------------------------
+INSERT INTO entry_group (name) VALUES
+    ('General Vocabulary'),
+    ('Programming Concepts'),
+    ('Example Sentences');
 
--- Insert sample data into terms table
-INSERT INTO terms (term, meaning, extra, category_id, group_id, tags) 
-VALUES  
-    ('Rust', 'A systems programming language focused on safety and performance', 'Compiles to machine code', 
-    (SELECT id FROM categories WHERE name = 'Programming Languages'), 
-    (SELECT id FROM groups WHERE name = 'Technology'), 
-    '["memory safety", "performance"]'),
+-- -------------------------------
+-- Insert Term Entries
+-- -------------------------------
+INSERT INTO entry (type, group_id) VALUES
+    ('term', 1), -- ID 1
+    ('term', 1); -- ID 2
 
-    ('Quantum Mechanics', 'The branch of physics that deals with phenomena at microscopic scales', 'Involves the study of particles and waves', 
-    (SELECT id FROM categories WHERE name = 'Physics'), 
-    (SELECT id FROM groups WHERE name = 'Science'), 
-    '["quantum", "physics"]'),
+INSERT INTO term (entry_id) VALUES (1), (2);
 
-    ('Impressionism', 'A 19th-century art movement characterized by small, thin brush strokes', 'A response to realism', 
-    (SELECT id FROM categories WHERE name = 'Visual Arts'), 
-    (SELECT id FROM groups WHERE name = 'Arts'), 
-    '["art", "impressionist"]');
+-- Term Translations
+INSERT INTO term_translation (term_id, language_code, translation, definition) VALUES
+    (1, 'en', 'dog', 'A domesticated carnivorous mammal.'),
+    (1, 'fr', 'chien', 'Un mammifère carnivore domestiqué.'),
+    (1, 'de', 'Hund', 'Ein domestiziertes fleischfressendes Säugetier.'),
+    (2, 'en', 'computer', 'An electronic device for storing and processing data.'),
+    (2, 'es', 'computadora', 'Un dispositivo electrónico para almacenar y procesar datos.');
 
-INSERT INTO terms (term, meaning, extra, category_id, group_id, tags) 
-VALUES 
-    ('Serendipity', 'The occurrence of events by chance in a happy or beneficial way', 'Often used in scientific discoveries', NULL, NULL, '["luck", "chance"]'),
-    
-    ('Petrichor', 'The pleasant, earthy smell after fresh rain', 'Caused by oils released from the soil', NULL, NULL, '["smell", "rain"]'),
+-- -------------------------------
+-- Insert Concept Entries
+-- -------------------------------
+INSERT INTO entry (type, group_id) VALUES
+    ('concept', 2), -- ID 3
+    ('concept', 2); -- ID 4
 
-    ('Sonder', 'The realization that each passerby has a life as vivid and complex as your own', 'A term from The Dictionary of Obscure Sorrows', NULL, NULL, '["philosophy", "emotion"]');
+INSERT INTO concept (entry_id, markdown_content) VALUES
+    (3, '### Variable\nA container for storing data values.'),
+    (4, '### Function\nA block of code which only runs when it is called.');
+
+-- Concept Titles
+INSERT INTO concept_title (concept_id, language_code, title) VALUES
+    (3, 'en', 'Variable'),
+    (3, 'fr', 'Variable'),
+    (4, 'en', 'Function'),
+    (4, 'de', 'Funktion');
+
+-- -------------------------------
+-- Insert Sentence Entries
+-- -------------------------------
+INSERT INTO entry (type, group_id) VALUES
+    ('sentence', 3), -- ID 5
+    ('sentence', 3); -- ID 6
+
+INSERT INTO sentence (entry_id) VALUES (5), (6);
+
+-- Sentence Translations
+INSERT INTO sentence_translation (sentence_id, language_code, sentence) VALUES
+    (5, 'en', 'The quick brown fox jumps over the lazy dog.'),
+    (5, 'fr', 'Le rapide renard brun saute par-dessus le chien paresseux.'),
+    (6, 'en', 'Programming is both an art and a science.'),
+    (6, 'es', 'La programación es tanto un arte como una ciencia.');
+
+-- Done!
+-- Your FTS table will be populated automatically by the triggers.
+
+-- Optional: Test FTS
+-- SELECT * FROM entry_fts WHERE content MATCH 'dog';
+-- SELECT * FROM entry_fts WHERE content MATCH 'fonction'; -- French title

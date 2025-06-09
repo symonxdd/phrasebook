@@ -67,6 +67,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useRouter } from "vue-router";
 import TermsView from "./TermsView.vue";
 
+
 const categories = ref([]);
 const groups = ref([]);
 const searchQuery = ref("");
@@ -78,13 +79,13 @@ const router = useRouter();
 const isSearching = computed(() => searchQuery.value.trim() !== "");
 
 onMounted(async () => {
-  categories.value = await invoke("load_non_empty_categories");
-  groups.value = await invoke("load_non_empty_groups");
-  unsorted.value = await invoke("load_non_empty_unsorted");
+  // categories.value = await invoke("load_non_empty_categories");
+  // groups.value = await invoke("load_non_empty_groups");
+  // unsorted.value = await invoke("load_non_empty_unsorted");
 
-  console.log("categories:", categories.value);
-  console.log("groups:", groups.value);
-  console.log("unsorted:", unsorted.value);
+  // console.log("categories:", categories.value);
+  // console.log("groups:", groups.value);
+  // console.log("unsorted:", unsorted.value);
 });
 
 async function navigateToTerms(name, type) {

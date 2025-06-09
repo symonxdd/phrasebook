@@ -32,9 +32,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import { useRoute } from 'vue-router';
 import TermItem from "./TermItem.vue";
-// import { useFilterStore } from '../stores/filters';
 
-// const filters = useFilterStore();
 const route = useRoute();
 const terms = ref([]);
 const viewMode = ref("list");
@@ -43,39 +41,6 @@ const cols = ref(getCols()); // Dynamic column count
 const props = defineProps({
   searchResults: Array
 });
-
-let dragMoved = false; // Track if movement occurs
-
-const quickFilters = ref(null); // Reference for quick-filters
-// let isDragging = false;
-// let startX, scrollLeft;
-
-// function handleFilterClick(title) {
-//   if (!dragMoved) {
-//     filters.toggleGroup(title);
-//   }
-// }
-
-// Drag-to-scroll logic for quick-filters
-// function startDrag(e) {
-//   isDragging = true;
-//   dragMoved = false; // Reset drag movement flag
-//   startX = e.pageX - quickFilters.value.offsetLeft;
-//   scrollLeft = quickFilters.value.scrollLeft;
-// }
-
-// function onDrag(e) {
-//   if (!isDragging) return;
-//   e.preventDefault();
-//   dragMoved = true; // Dragging has started
-//   const x = e.pageX - quickFilters.value.offsetLeft;
-//   const walk = (x - startX) * 1; // scroll speed
-//   quickFilters.value.scrollLeft = scrollLeft - walk;
-// }
-
-// function stopDrag() {
-//   isDragging = false;
-// }
 
 function getCols() {
   if (window.innerWidth > 2000) return 6;
@@ -98,46 +63,23 @@ onMounted(async () => {
 
   window.addEventListener("resize", updateCols);
 
-  // if (quickFilters.value) {
-  // quickFilters.value.addEventListener("mousedown", startDrag);
-  // window.addEventListener("mousemove", onDrag); // Listen on window
-  // window.addEventListener("mouseup", stopDrag); // Listen on window
-  // }
 });
 
 onUnmounted(() => {
   window.removeEventListener("resize", updateCols);
-
-  // if (quickFilters.value) {
-  // quickFilters.value.removeEventListener("mousedown", startDrag);
-  // }
-  // window.removeEventListener("mousemove", onDrag); // Remove from window
-  // window.removeEventListener("mouseup", stopDrag); // Remove from window
 });
 
 const filteredTerms = computed(() => {
-  // If searchResults exist, return them directly (override filtering)
   if (props.searchResults && props.searchResults.length > 0) {
     return props.searchResults;
   }
 
-  // Otherwise, apply category/group filtering
   const name = route.query.name;
   const type = route.query.type;
 
   console.log('name:', name, 'type:', type);
 
-  return terms.value; // Fallback to category/group terms
-
-  // return terms.value.filter(term => {
-  //   const matchesSearch = term.term.toLowerCase().includes(filters.searchQuery.toLowerCase());
-
-  //   const matchesType = type === 'category'
-  //     ? term.category === name
-  //     : term.group === name;
-
-  //   return matchesSearch && matchesType;
-  // });
+  return terms.value;
 });
 </script>
 

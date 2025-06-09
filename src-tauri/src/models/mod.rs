@@ -1,7 +1,10 @@
-pub mod category;
-pub mod group;
+pub mod concept;
+pub mod core;
+pub mod sentence;
 pub mod term;
 
-pub use category::Category;
-pub use group::Group;
-pub use term::Term;
+// Re-export useful structs for convenience
+pub use concept::ConceptTitle;
+pub use core::{Entry, ExploreResponse};
+pub use sentence::SentenceTranslation;
+pub use term::TermTranslation;

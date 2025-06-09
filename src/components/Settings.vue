@@ -1,6 +1,5 @@
 <template>
   <div class="settings container">
-    <!-- Open Install Folder Section -->
     <div class="setting-group">
       <h5>Open install folder</h5>
       <button class="btn open-btn" @click="openAppLocalAppData">
@@ -9,27 +8,55 @@
       </button>
     </div>
 
-    <!-- Add & Import Section -->
     <div class="setting-group">
-      <h5>Add & Import</h5>
+      <h5>Add & import</h5>
       <div class="btn-group">
-        <button class="btn import-btn" @click="$router.push('/import')">
+        <button class="btn" @click="$router.push('/import')">
           <i class="bi bi-file-earmark-arrow-up"></i>
           <span>Import</span>
         </button>
 
-        <button class="btn add-btn" @click="$router.push('/add')">
+        <button class="btn" @click="$router.push('/add')">
           <i class="bi bi-plus-circle"></i>
           <span>Add manually</span>
         </button>
       </div>
     </div>
+
+    <div class="setting-group">
+      <h5>Language display order</h5>
+      <draggable :animation="200" v-model="languageStore.languages" item-key="code"
+        :component-data="{ tag: 'div', class: 'flag-row' }">
+        <template #item="{ element }">
+          <div :key="element.code">
+            <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
+          </div>
+        </template>
+      </draggable>
+    </div>
   </div>
 </template>
 
 <script setup>
+import draggable from 'vuedraggable'
 import { invoke } from "@tauri-apps/api/core";
 import { revealItemInDir } from '@tauri-apps/plugin-opener';
+import { useLanguageStore } from '../stores/languageStore'
+
+const languageStore = useLanguageStore()
+
+const getFlagSrc = (code) => {
+  const flagMap = {
+    en: 'en.png',
+    pl: 'pl.png',
+    nl: 'nl.png',
+    kr: 'kr.png',
+    fr: 'fr.png',
+    de: 'de.png',
+    es: 'es.png',
+  }
+  return new URL(`../assets/flags/${flagMap[code]}`, import.meta.url).href
+}
 
 const openAppLocalAppData = async () => {
   const path = await invoke('get_app_localappdata');
@@ -51,7 +78,7 @@ const openAppLocalAppData = async () => {
 h5 {
   font-size: 0.95rem;
   color: #adadad;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
@@ -82,11 +109,29 @@ h5 {
 
 .btn:hover {
   background-color: #2b2b2b;
-  /* color: #d6d6d6; */
 }
 
 .btn-group {
   display: flex;
   gap: 10px;
+}
+
+.flag-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flag-icon {
+  margin-right: 1.2rem;
+  width: 40px;
+  height: 40px;
+  transition: transform 0.2s ease;
+  cursor: grab;
+}
+
+.flag-icon:active {
+  transform: scale(0.95);
+  cursor: grabbing;
 }
 </style>

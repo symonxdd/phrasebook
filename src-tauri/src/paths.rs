@@ -9,3 +9,14 @@ pub fn get_app_localappdata() -> String {
   fs::create_dir_all(&app_dir).expect("Failed to create app data folder");
   app_dir.to_str().unwrap().to_string()
 }
+
+#[command(rename_all = "snake_case")]
+pub fn get_app_install_location() -> String {
+  std::env::current_exe()
+    .unwrap()
+    .parent()
+    .unwrap()
+    .to_str()
+    .unwrap()
+    .to_string()
+}

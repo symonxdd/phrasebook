@@ -19,7 +19,8 @@ pub async fn init_db() -> SqlitePool {
 
   let connection = SqliteConnectOptions::new()
     .create_if_missing(true)
-    .filename(&format!("{}/{}", db_path, db_name));
+    .filename(&format!("{}/{}", db_path, db_name))
+    .foreign_keys(true);
 
   // Establish a connection pool (max 5 connections), creating the DB file if it doesn't exist
   let pool = SqlitePoolOptions::new()

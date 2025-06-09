@@ -8,6 +8,11 @@
         <span class="nav-text">Home</span>
       </li>
 
+      <li class="nav-item" :class="{ active: $route.path === '/explore' }" @click="$router.push('/explore')">
+        <i class="bi bi-compass nav-icon"></i>
+        <span class="nav-text">Explore</span>
+      </li>
+
       <li class="nav-item" :class="{ active: $route.path === '/favorites' }" @click="$router.push('/favorites')">
         <i class="bi bi-star nav-icon"></i>
         <span class="nav-text">Favorites</span>
@@ -58,7 +63,7 @@ const filters = useFilterStore()
   display: flex;
   align-items: center;
   padding: 10px 24px;
-  color: #919191;
+  color: #838383;
   font-size: 0.9rem;
   border-radius: 6px;
   transition: background 0.2s, color 0.2s;
@@ -75,8 +80,8 @@ const filters = useFilterStore()
 }
 
 .nav-item.active {
-  color: #919191;
-  /* font-weight: bold; */
+  color: #c5c5c5;
+  font-weight: bold;
   background: transparent;
 }
 
@@ -89,7 +94,7 @@ const filters = useFilterStore()
   width: 4px;
   /* Start with 0 width */
   height: 60%;
-  background-color: #a11a05;
+  background-color: #7a7a7a;
   /* FF3214 */
   border-radius: 6px;
   opacity: 0;

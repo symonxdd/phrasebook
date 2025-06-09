@@ -5,6 +5,7 @@ import Settings from "./components/Settings.vue";
 import TermsView from "./components/TermsView.vue";
 import ImportTerms from "./components/ImportTerms.vue";
 import Favorites from "./components/Favorites.vue";
+import Explore from "./views/Explore.vue";
 
 const routes = [
   { path: "/", component: Dashboard },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/settings", component: Settings },
   { path: '/import', component: ImportTerms },
   { path: '/favorites', component: Favorites },
+  { path: '/explore', component: Explore },
   {
     path: '/terms',
     name: 'terms-view',
