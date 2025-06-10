@@ -40,7 +40,7 @@ const filters = useFilterStore()
 .sidebar {
   width: 250px;
   min-width: 250px;
-  background-color: #121212;
+  background-color: var(--bg-color);
   height: 100vh;
   display: flex;
   flex-direction: column;

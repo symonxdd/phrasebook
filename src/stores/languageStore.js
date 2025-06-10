@@ -40,6 +40,13 @@ export const useLanguageStore = defineStore('language', () => {
     isInitializing.value = false
   }
 
+  // Watch the order of languages and save to localStorage
+  watch(languages, (newLangList) => {
+    if (isInitializing.value) return
+    const order = newLangList.map(lang => lang.code)
+    localStorage.setItem('languageOrder', JSON.stringify(order))
+  }, { deep: true })
+
   // Save visibleLanguages and sync exploreVisibleLanguages
   watch(visibleLanguages, (newVisible) => {
     if (isInitializing.value) return

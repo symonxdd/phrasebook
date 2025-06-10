@@ -1,23 +1,6 @@
 <template>
   <div class="settings container">
-    <!-- Theme Selection -->
-    <div class="setting-group">
-      <h5 class="label-heading">
-        <i class="bi bi-palette" style="margin-right: 6px;"></i>
-        Theme
-      </h5>
-      <small class="label-subtext">Choose app appearance</small>
-      <div class="btn-group">
-        <button class="btn" @click="setTheme('light')" :class="{ active: themeStore.theme === 'light' }">Light</button>
-        <button class="btn" @click="setTheme('dark')" :class="{ active: themeStore.theme === 'dark' }">Dark</button>
-        <button class="btn" @click="setTheme('system')"
-          :class="{ active: themeStore.theme === 'system' }">System</button>
-      </div>
-    </div>
-
-    <!-- Language Settings Grouped -->
     <div class="setting-group setting-group-combined">
-      <!-- Language Visibility Toggle -->
       <div class="sub-setting">
         <h5 class="label-heading">
           <i class="bi bi-flag" style="margin-right: 6px;"></i>
@@ -34,7 +17,6 @@
         </div>
       </div>
 
-      <!-- Language Order -->
       <div class="sub-setting draggable-flags">
         <h5 class="label-heading">
           <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
@@ -52,13 +34,25 @@
       </div>
     </div>
 
-    <!-- Import & Open Grouped -->
+    <div class="setting-group">
+      <h5 class="label-heading">
+        <i class="bi bi-palette" style="margin-right: 6px;"></i>
+        Theme
+      </h5>
+      <small class="label-subtext">Choose app appearance</small>
+      <div class="btn-group">
+        <button class="btn" @click="setTheme('light')" :class="{ active: themeStore.theme === 'light' }">Light</button>
+        <button class="btn" @click="setTheme('dark')" :class="{ active: themeStore.theme === 'dark' }">Dark</button>
+        <button class="btn" @click="setTheme('system')"
+          :class="{ active: themeStore.theme === 'system' }">System</button>
+      </div>
+    </div>
+
     <div class="setting-group setting-group-combined">
-      <!-- Add & Import -->
       <div class="sub-setting">
         <h5 class="label-heading">
           <i class="bi bi-cloud-arrow-up" style="margin-right: 6px;"></i>
-          Add & import
+          Add & Import
         </h5>
         <div class="btn-group">
           <button class="btn" @click="$router.push('/import')">
@@ -72,7 +66,6 @@
         </div>
       </div>
 
-      <!-- Open Folder -->
       <div class="sub-setting">
         <h5 class="label-heading">
           <i class="bi bi-folder2-open" style="margin-right: 6px;"></i>
@@ -127,6 +120,7 @@ const openAppLocalAppData = async () => {
 }
 
 .setting-group {
+  width: fit-content;
   margin-bottom: 18px;
   padding: 16px;
   border-radius: 12px;
@@ -194,6 +188,7 @@ h5.label-heading {
 }
 
 .flag-icon {
+  display: block;
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -223,16 +218,17 @@ h5.label-heading {
 }
 
 .setting-group-combined {
+  width: fit-content;
+  max-width: 100%;
   padding: 20px;
   border-radius: 14px;
   border: 1px solid var(--border-color);
-  background-color: var(--card-bg, rgba(255, 255, 255, 0.03));
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
 }
 
 .setting-group-combined .sub-setting + .sub-setting {
-  margin-top: 20px;
-  padding-top: 16px;
+  margin-top: 10px;
+  padding-top: 9px;
   border-top: 1px dashed var(--border-color);
 }
 
