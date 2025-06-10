@@ -38,13 +38,15 @@ const filters = useFilterStore()
 
 <style scoped>
 .sidebar {
-  width: 250px;
-  min-width: 250px;
+  width: 254px;
+  min-width: 254px;
   background-color: var(--bg-color);
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 10px 12px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
 }
 
 .nav-list {
@@ -62,27 +64,30 @@ const filters = useFilterStore()
   position: relative;
   display: flex;
   align-items: center;
-  padding: 10px 24px;
-  color: #838383;
-  font-size: 0.9rem;
-  border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
+  padding: 12px 20px;
+  color: var(--nav-item-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color 0.25s ease, color 0.25s ease;
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
 .nav-item:hover {
-  background: #2a2a2a;
-  color: #bbbbbb;
+  background-color: var(--nav-item-hover-bg);
+  color: var(--nav-item-hover-color);
 }
 
 .nav-item:active {
-  background: #333;
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 .nav-item.active {
-  color: #c5c5c5;
-  font-weight: bold;
-  background: transparent;
+  /* background-color: var(--nav-item-active-bg); */
+  color: var(--nav-item-active-color);
+  font-weight: 600;
 }
 
 .nav-item::before {
@@ -92,25 +97,20 @@ const filters = useFilterStore()
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
-  /* Start with 0 width */
   height: 60%;
-  background-color: #7a7a7a;
-  /* FF3214 */
+  background-color: var(--nav-indicator-color);
   border-radius: 6px;
   opacity: 0;
-  /* Start with 0 opacity */
   transition: width 0.3s ease, opacity 0.3s ease;
-  /* Smooth transition */
 }
 
 .nav-item.active::before {
   opacity: 1;
-  /* End with full opacity */
 }
 
 .nav-icon {
-  font-size: 1rem;
-  margin-right: 8px;
+  font-size: 1.1rem;
+  margin-right: 10px;
 }
 
 .nav-text {
@@ -119,7 +119,8 @@ const filters = useFilterStore()
 
 .nav-separator {
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-color);
+  opacity: 0.3;
   margin: 10px 0;
   width: 100%;
 }
