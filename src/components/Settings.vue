@@ -15,68 +15,74 @@
       </div>
     </div>
 
-    <!-- Language Visibility Toggle -->
-    <div class="setting-group">
-      <h5 class="label-heading">
-        <i class="bi bi-flag" style="margin-right: 6px;"></i>
-        Languages shown on Explore page
-      </h5>
-      <small class="label-subtext">Click flags to toggle which languages should be visible when browsing
-        entries.</small>
-      <div class="flag-row toggle-flags">
-        <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
-          :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
-          @click="languageStore.toggleLanguageVisibility(lang.code)">
-          <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
+    <!-- Language Settings Grouped -->
+    <div class="setting-group setting-group-combined">
+      <!-- Language Visibility Toggle -->
+      <div class="sub-setting">
+        <h5 class="label-heading">
+          <i class="bi bi-flag" style="margin-right: 6px;"></i>
+          Languages shown on Explore page
+        </h5>
+        <small class="label-subtext">Click flags to toggle which languages should be visible when browsing
+          entries.</small>
+        <div class="flag-row toggle-flags">
+          <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
+            :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
+            @click="languageStore.toggleLanguageVisibility(lang.code)">
+            <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Language Order -->
-    <div class="setting-group draggable-flags">
-      <h5 class="label-heading">
-        <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
-        Language display order
-      </h5>
-      <small class="label-subtext">Drag and drop the flags to set your preferred language display order.</small>
-      <draggable :animation="200" v-model="languageStore.languages" item-key="code"
-        :component-data="{ tag: 'div', class: 'flag-row' }">
-        <template #item="{ element }">
-          <div :key="element.code">
-            <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
-          </div>
-        </template>
-      </draggable>
-    </div>
-
-    <!-- Navigation -->
-    <div class="setting-group">
-      <h5 class="label-heading">
-        <i class="bi bi-cloud-arrow-up" style="margin-right: 6px;"></i>
-        Add & import
-      </h5>
-      <div class="btn-group">
-        <button class="btn" @click="$router.push('/import')">
-          <i class="bi bi-file-earmark-arrow-up"></i>
-          <span>Import</span>
-        </button>
-        <button class="btn" @click="$router.push('/add')">
-          <i class="bi bi-plus-circle"></i>
-          <span>Add manually</span>
-        </button>
+      <!-- Language Order -->
+      <div class="sub-setting draggable-flags">
+        <h5 class="label-heading">
+          <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
+          Language display order
+        </h5>
+        <small class="label-subtext">Drag and drop the flags to set your preferred language display order.</small>
+        <draggable :animation="200" v-model="languageStore.languages" item-key="code"
+          :component-data="{ tag: 'div', class: 'flag-row' }">
+          <template #item="{ element }">
+            <div :key="element.code">
+              <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
+            </div>
+          </template>
+        </draggable>
       </div>
     </div>
 
-    <!-- Open Folder -->
-    <div class="setting-group">
-      <h5 class="label-heading">
-        <i class="bi bi-folder2-open" style="margin-right: 6px;"></i>
-        Open install location
-      </h5>
-      <button class="btn open-btn" @click="openAppLocalAppData">
-        <i class="bi bi-folder"></i>
-        <span>Open install location</span>
-      </button>
+    <!-- Import & Open Grouped -->
+    <div class="setting-group setting-group-combined">
+      <!-- Add & Import -->
+      <div class="sub-setting">
+        <h5 class="label-heading">
+          <i class="bi bi-cloud-arrow-up" style="margin-right: 6px;"></i>
+          Add & import
+        </h5>
+        <div class="btn-group">
+          <button class="btn" @click="$router.push('/import')">
+            <i class="bi bi-file-earmark-arrow-up"></i>
+            <span>Import</span>
+          </button>
+          <button class="btn" @click="$router.push('/add')">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add manually</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Open Folder -->
+      <div class="sub-setting">
+        <h5 class="label-heading">
+          <i class="bi bi-folder2-open" style="margin-right: 6px;"></i>
+          Open install location
+        </h5>
+        <button class="btn open-btn" @click="openAppLocalAppData">
+          <i class="bi bi-folder"></i>
+          <span>Open install location</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -121,7 +127,12 @@ const openAppLocalAppData = async () => {
 }
 
 .setting-group {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
 }
 
 h5.label-heading {
@@ -179,7 +190,7 @@ h5.label-heading {
 .flag-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 20px;
 }
 
 .flag-icon {
@@ -209,5 +220,23 @@ h5.label-heading {
 .draggable-flags .flag-icon:active {
   transform: scale(0.95);
   cursor: grabbing;
+}
+
+.setting-group-combined {
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.03));
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+}
+
+.setting-group-combined .sub-setting + .sub-setting {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.setting-group-combined i {
+  filter: drop-shadow(0 0 0.6px currentColor);
 }
 </style>
