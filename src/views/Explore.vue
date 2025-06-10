@@ -11,9 +11,11 @@
 
       <div class="right-side">
         <div class="language-filters">
-          <label v-for="lang in allLanguages" :key="lang.code" class="language-toggle">
-            <input type="checkbox" :checked="visibleLanguages.includes(lang.code)"
-              @change="toggleLanguage(lang.code)" />
+          <label v-for="lang in languageStore.languages.filter(l => languageStore.visibleLanguages.includes(l.code))"
+            :key="lang.code" class="language-toggle">
+            <input type="checkbox" :checked="languageStore.exploreVisibleLanguages.includes(lang.code)"
+              @change="languageStore.toggleExploreLanguageVisibility(lang.code)" />
+
             <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
           </label>
         </div>
@@ -80,9 +82,8 @@ import { useLanguageStore } from '../stores/languageStore'
 
 const languageStore = useLanguageStore();
 
-const allLanguages = computed(() =>
-  languageStore.languages.filter(lang => lang.code !== 'en')
-)
+// Use localVisible for checking visibility in the UI
+const isLangVisible = (code) => languageStore.exploreVisibleLanguages.includes(code);
 
 const entryTypes = ['term', 'sentence', 'concept']
 const selectedTypes = ref(['term'])
@@ -91,33 +92,16 @@ const loading = ref(false)
 const offset = ref(0)
 const limit = 20
 const doneLoading = ref(false)
-const visibleLanguages = ref([])
 const entryStats = ref({ total: 0, term: 0, sentence: 0, concept: 0 })
+const localVisibleLanguages = ref([])
 
-watch(
-  allLanguages,
-  (langs) => {
-    if (visibleLanguages.value.length === 0) {
-      visibleLanguages.value = langs.map(l => l.code)
-    }
-  },
-  { immediate: true }
-)
+watch(() => languageStore.languages, (langs) => {
+  localVisibleLanguages.value = langs.map(l => l.code)
+}, { immediate: true })
 
 const toggleFavorite = (entry) => {
   entry.isFavorite = !entry.isFavorite;
   console.log(`Toggled favorite for entry ${entry.entry_id}: ${entry.isFavorite}`);
-
-  // Optionally save to localStorage or backend
-}
-
-const toggleLanguage = (lang) => {
-  const idx = visibleLanguages.value.indexOf(lang)
-  if (idx !== -1) {
-    visibleLanguages.value.splice(idx, 1)
-  } else {
-    visibleLanguages.value.push(lang)
-  }
 }
 
 const toggleType = (type) => {
@@ -133,8 +117,27 @@ const priorityOrder = computed(() =>
 )
 
 const filteredEntries = computed(() =>
-  entries.value.filter((entry) => selectedTypes.value.includes(entry.type))
+  entries.value.filter((entry) =>
+    selectedTypes.value.includes(entry.type) &&
+    isEntryVisibleInCurrentLanguages(entry)
+  )
 )
+
+function isEntryVisibleInCurrentLanguages(entry) {
+  const { translations = [], sentences = [], titles = [] } = entry;
+  const visibleLangs = languageStore.exploreVisibleLanguages;
+
+  switch (entry.type) {
+    case 'term':
+      return translations.some(tr => visibleLangs.includes(tr.language));
+    case 'sentence':
+      return sentences.some(s => visibleLangs.includes(s.language));
+    case 'concept':
+      return titles.some(t => visibleLangs.includes(t.language));
+    default:
+      return false;
+  }
+}
 
 const sortByPriority = (items) => {
   const order = priorityOrder.value
@@ -144,9 +147,6 @@ const sortByPriority = (items) => {
     return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex)
   })
 }
-
-// Check if a lang should be shown
-const isLangVisible = (lang) => lang === 'en' || visibleLanguages.value.includes(lang)
 
 const renderMarkdown = (content) => marked.parse(content || '')
 
@@ -383,7 +383,6 @@ li:not(:last-child) {
   color: #919191;
   font-size: 1rem;
   cursor: pointer;
-  padding: 0.1rem;
   transition: color 0.2s ease;
 }
 
@@ -413,5 +412,9 @@ li:not(:last-child) {
   border-radius: 2px;
   margin-right: 0.2rem;
   filter: brightness(80%) grayscale(30%);
+}
+
+.language-toggle.inactive .flag-icon {
+  filter: brightness(40%) grayscale(70%);
 }
 </style>

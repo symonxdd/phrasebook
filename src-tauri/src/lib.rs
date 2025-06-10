@@ -17,6 +17,7 @@ pub fn run() {
       commands::queries::dashboard::get_explore_entries,
       commands::queries::common::get_all_languages,
       commands::queries::common::get_entry_stats,
+      paths::get_app_localappdata,
       // commands::queries::term_queries::get_all_terms,
       // commands::queries::term_queries::get_term_details,
       // commands::queries::concept_queries::get_concept_details,

@@ -1,11 +1,30 @@
 <template>
   <div class="settings container">
     <div class="setting-group">
-      <h5>Open install folder</h5>
-      <button class="btn open-btn" @click="openAppLocalAppData">
-        <i class="bi bi-folder"></i>
-        <span>Open</span>
-      </button>
+      <h5 class="label-heading">Languages shown on Explore page</h5>
+      <small class="label-subtext">Click flags to toggle which languages should be visible when
+        browsing entries.</small>
+      <div class="flag-row toggle-flags">
+        <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
+          :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
+          @click="languageStore.toggleLanguageVisibility(lang.code)">
+          <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
+        </div>
+      </div>
+    </div>
+
+    <div class="setting-group draggable-flags">
+      <h5 class="label-heading">Language display order</h5>
+      <small class="label-subtext">Drag and drop the flags to set your preferred language display order.</small>
+
+      <draggable :animation="200" v-model="languageStore.languages" item-key="code"
+        :component-data="{ tag: 'div', class: 'flag-row' }">
+        <template #item="{ element }">
+          <div :key="element.code">
+            <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
+          </div>
+        </template>
+      </draggable>
     </div>
 
     <div class="setting-group">
@@ -24,15 +43,11 @@
     </div>
 
     <div class="setting-group">
-      <h5>Language display order</h5>
-      <draggable :animation="200" v-model="languageStore.languages" item-key="code"
-        :component-data="{ tag: 'div', class: 'flag-row' }">
-        <template #item="{ element }">
-          <div :key="element.code">
-            <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
-          </div>
-        </template>
-      </draggable>
+      <!-- <h5>Open install location</h5> -->
+      <button class="btn open-btn" @click="openAppLocalAppData">
+        <i class="bi bi-folder"></i>
+        <span>Open install location</span>
+      </button>
     </div>
   </div>
 </template>
@@ -90,6 +105,7 @@ h5 {
   gap: 6px;
   padding: 8px 14px;
   font-weight: 400;
+  font-family: Inter;
   border-radius: 8px;
   transition: all 0.2s ease-in-out;
   color: #333;
@@ -120,18 +136,63 @@ h5 {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 .flag-icon {
   margin-right: 1.2rem;
   width: 40px;
   height: 40px;
+  cursor: default;
   transition: transform 0.2s ease;
+}
+
+/* Only show grab cursor in draggable-flags section */
+.draggable-flags .flag-icon {
   cursor: grab;
 }
 
-.flag-icon:active {
+.draggable-flags .flag-icon:active {
   transform: scale(0.95);
   cursor: grabbing;
+}
+
+.flag-row.toggle-flags {
+  /* margin-top: 10px; */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.flag-toggle {
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+.flag-toggle:hover {
+  transform: scale(1.05);
+}
+
+.flag-toggle.inactive img {
+  filter: brightness(40%) grayscale(70%);
+}
+
+.flag-toggle img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  transition: filter 0.2s ease;
+}
+
+.label-heading {
+  margin-bottom: 0;
+}
+
+.label-subtext {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 10px;
 }
 </style>
