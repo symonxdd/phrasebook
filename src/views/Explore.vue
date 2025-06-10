@@ -11,13 +11,14 @@
 
       <div class="right-side">
         <div class="language-filters">
-          <label v-for="lang in languageStore.languages.filter(l => languageStore.visibleLanguages.includes(l.code))"
-            :key="lang.code" class="language-toggle">
-            <input type="checkbox" :checked="languageStore.exploreVisibleLanguages.includes(lang.code)"
-              @change="languageStore.toggleExploreLanguageVisibility(lang.code)" />
+          <div v-for="lang in languageStore.languages.filter(l => languageStore.visibleLanguages.includes(l.code))"
+            :key="lang.code" class="language-toggle"
+            :class="{ inactive: !languageStore.exploreVisibleLanguages.includes(lang.code) }"
+            @click="languageStore.toggleExploreLanguageVisibility(lang.code)" role="button" tabindex="0"
+            @keydown.enter.prevent="languageStore.toggleExploreLanguageVisibility(lang.code)">
 
             <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
-          </label>
+          </div>
         </div>
 
         <!-- <div class="entry-stats">
@@ -246,6 +247,7 @@ const getFlagSrc = (code) => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .language-toggle {
@@ -264,20 +266,10 @@ const getFlagSrc = (code) => {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.language-toggle input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
-}
-
 .language-toggle .flag-icon {
   width: 24px;
-  height: 16px;
-  border-radius: 2px;
-  object-fit: cover;
-  filter: brightness(50%) grayscale(30%);
+  height: auto;
+  filter: brightness(90%);
   transition: filter 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
@@ -286,11 +278,6 @@ const getFlagSrc = (code) => {
   height: 12px;
   border-radius: 2px;
   object-fit: cover;
-  margin-right: 0.7rem;
-}
-
-.language-toggle input[type="checkbox"]:checked + .flag-icon {
-  filter: brightness(85%) grayscale(30%);
 }
 
 .filter-pill {
@@ -411,10 +398,10 @@ li:not(:last-child) {
   object-fit: cover;
   border-radius: 2px;
   margin-right: 0.2rem;
-  filter: brightness(80%) grayscale(30%);
+  filter: brightness(80%);
 }
 
 .language-toggle.inactive .flag-icon {
-  filter: brightness(40%) grayscale(70%);
+  filter: brightness(70%);
 }
 </style>

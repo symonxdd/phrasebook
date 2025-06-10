@@ -14,6 +14,7 @@ export const useLanguageStore = defineStore('language', () => {
     const savedOrder = localStorage.getItem('languageOrder')
     const savedVisibility = localStorage.getItem('visibleLanguages')
     const savedExploreVisibility = localStorage.getItem('exploreVisibleLanguages')
+    console.log("localStorage exploreVisibleLanguages:", savedExploreVisibility);
 
     const result = await invoke('get_all_languages')
 
@@ -83,6 +84,8 @@ export const useLanguageStore = defineStore('language', () => {
   }, { deep: true })
 
   watch(exploreVisibleLanguages, val => {
+    console.log("setting exploreVisibleLanguages, new value:", val);
+
     localStorage.setItem('exploreVisibleLanguages', JSON.stringify(val))
   }, { deep: true })
 
@@ -93,6 +96,8 @@ export const useLanguageStore = defineStore('language', () => {
   }
 
   const toggleExploreLanguageVisibility = (code) => {
+    console.log("Toggling explore language visibility for code:", code);
+
     const idx = exploreVisibleLanguages.value.indexOf(code)
     if (idx !== -1) exploreVisibleLanguages.value.splice(idx, 1)
     else exploreVisibleLanguages.value.push(code)
