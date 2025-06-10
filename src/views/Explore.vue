@@ -210,8 +210,8 @@ const getFlagSrc = (code) => {
 
 <style scoped>
 .explore-page {
-  background-color: #121212;
-  color: #eee;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 1rem;
   font-family: 'Inter', sans-serif;
 }
@@ -233,7 +233,8 @@ const getFlagSrc = (code) => {
 
 .entry-stats {
   font-size: 0.7rem;
-  color: #7c7c7c;
+  color: var(--text-color);
+  opacity: 0.6;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -263,13 +264,13 @@ const getFlagSrc = (code) => {
 }
 
 .language-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--btn-hover-bg);
 }
 
 .language-toggle .flag-icon {
   width: 24px;
   height: auto;
-  filter: brightness(90%);
+  filter: var(--flag-filter);
   transition: filter 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
@@ -280,12 +281,17 @@ const getFlagSrc = (code) => {
   object-fit: cover;
 }
 
+.language-toggle.inactive .flag-icon {
+  filter: brightness(70%);
+}
+
 .filter-pill {
   background-color: transparent;
-  border: 1px solid #444;
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   border-radius: 999px;
-  color: #ccc;
+  color: var(--text-color);
+  opacity: 0.7;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease-in-out;
@@ -294,19 +300,20 @@ const getFlagSrc = (code) => {
 }
 
 .filter-pill:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: #666;
+  background-color: var(--btn-hover-bg);
+  border-color: var(--border-color);
 }
 
 .filter-pill.active {
-  background-color: rgba(255, 255, 255, 0.068);
-  border-color: #383838;
-  color: #dddddd;
+  background-color: var(--btn-hover-bg);
+  border-color: var(--border-color);
+  color: var(--text-color);
+  opacity: 1;
 }
 
 .entry-card {
-  background-color: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   margin-bottom: 0.4rem;
   border-radius: 0.5rem;
@@ -319,7 +326,8 @@ const getFlagSrc = (code) => {
 .loading {
   text-align: center;
   padding: 1rem;
-  color: #888;
+  color: var(--text-color);
+  opacity: 0.6;
   user-select: none;
 }
 
@@ -346,18 +354,14 @@ li:not(:last-child) {
   display: inline-flex;
   align-items: center;
   font-weight: 500;
-  color: #cacaca;
+  color: var(--text-color);
   gap: 0.6rem;
 }
 
 .sentence,
 .term-definition {
-  color: #aaa;
-  font-size: 0.85rem;
-}
-
-.term-definition {
-  color: #aaa;
+  color: var(--text-color);
+  opacity: 0.7;
   font-size: 0.85rem;
 }
 
@@ -367,7 +371,8 @@ li:not(:last-child) {
   right: 0;
   background: none;
   border: none;
-  color: #919191;
+  color: #888;
+  /* you can also theme this if needed */
   font-size: 1rem;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -398,10 +403,6 @@ li:not(:last-child) {
   object-fit: cover;
   border-radius: 2px;
   margin-right: 0.2rem;
-  filter: brightness(80%);
-}
-
-.language-toggle.inactive .flag-icon {
-  filter: brightness(70%);
+  filter: var(--flag-filter);
 }
 </style>

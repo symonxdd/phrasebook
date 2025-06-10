@@ -50,7 +50,7 @@ async function loadTerms() {
 
 .app-content {
   flex-grow: 1;
-  background: #121212;
+  background-color: var(--bg-color);
   color: white;
   padding: 10px;
   overflow-y: auto;

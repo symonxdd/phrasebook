@@ -1,9 +1,28 @@
 <template>
   <div class="settings container">
+    <!-- Theme Selection -->
     <div class="setting-group">
-      <h5 class="label-heading">Languages shown on Explore page</h5>
-      <small class="label-subtext">Click flags to toggle which languages should be visible when
-        browsing entries.</small>
+      <h5 class="label-heading">
+        <i class="bi bi-palette" style="margin-right: 6px;"></i>
+        Theme
+      </h5>
+      <small class="label-subtext">Choose app appearance</small>
+      <div class="btn-group">
+        <button class="btn" @click="setTheme('light')" :class="{ active: themeStore.theme === 'light' }">Light</button>
+        <button class="btn" @click="setTheme('dark')" :class="{ active: themeStore.theme === 'dark' }">Dark</button>
+        <button class="btn" @click="setTheme('system')"
+          :class="{ active: themeStore.theme === 'system' }">System</button>
+      </div>
+    </div>
+
+    <!-- Language Visibility Toggle -->
+    <div class="setting-group">
+      <h5 class="label-heading">
+        <i class="bi bi-flag" style="margin-right: 6px;"></i>
+        Languages shown on Explore page
+      </h5>
+      <small class="label-subtext">Click flags to toggle which languages should be visible when browsing
+        entries.</small>
       <div class="flag-row toggle-flags">
         <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
           :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
@@ -13,10 +32,13 @@
       </div>
     </div>
 
+    <!-- Language Order -->
     <div class="setting-group draggable-flags">
-      <h5 class="label-heading">Language display order</h5>
+      <h5 class="label-heading">
+        <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
+        Language display order
+      </h5>
       <small class="label-subtext">Drag and drop the flags to set your preferred language display order.</small>
-
       <draggable :animation="200" v-model="languageStore.languages" item-key="code"
         :component-data="{ tag: 'div', class: 'flag-row' }">
         <template #item="{ element }">
@@ -27,14 +49,17 @@
       </draggable>
     </div>
 
+    <!-- Navigation -->
     <div class="setting-group">
-      <h5>Add & import</h5>
+      <h5 class="label-heading">
+        <i class="bi bi-cloud-arrow-up" style="margin-right: 6px;"></i>
+        Add & import
+      </h5>
       <div class="btn-group">
         <button class="btn" @click="$router.push('/import')">
           <i class="bi bi-file-earmark-arrow-up"></i>
           <span>Import</span>
         </button>
-
         <button class="btn" @click="$router.push('/add')">
           <i class="bi bi-plus-circle"></i>
           <span>Add manually</span>
@@ -42,8 +67,12 @@
       </div>
     </div>
 
+    <!-- Open Folder -->
     <div class="setting-group">
-      <!-- <h5>Open install location</h5> -->
+      <h5 class="label-heading">
+        <i class="bi bi-folder2-open" style="margin-right: 6px;"></i>
+        Open install location
+      </h5>
       <button class="btn open-btn" @click="openAppLocalAppData">
         <i class="bi bi-folder"></i>
         <span>Open install location</span>
@@ -54,11 +83,17 @@
 
 <script setup>
 import draggable from 'vuedraggable'
-import { invoke } from "@tauri-apps/api/core";
-import { revealItemInDir } from '@tauri-apps/plugin-opener';
+import { invoke } from "@tauri-apps/api/core"
+import { revealItemInDir } from '@tauri-apps/plugin-opener'
 import { useLanguageStore } from '../stores/languageStore'
+import { useThemeStore } from '../stores/themeStore'
 
 const languageStore = useLanguageStore()
+const themeStore = useThemeStore()
+
+const setTheme = (mode) => {
+  themeStore.setTheme(mode)
+}
 
 const getFlagSrc = (code) => {
   const flagMap = {
@@ -74,32 +109,40 @@ const getFlagSrc = (code) => {
 }
 
 const openAppLocalAppData = async () => {
-  const path = await invoke('get_app_localappdata');
-  console.log(path);
-  await revealItemInDir(`${path}/`);
-};
+  const path = await invoke('get_app_localappdata')
+  await revealItemInDir(`${path}/`)
+}
 </script>
 
 <style scoped>
 .settings {
   padding: 20px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .setting-group {
   margin-bottom: 24px;
 }
 
-h5 {
+h5.label-heading {
   font-size: 0.95rem;
-  color: #adadad;
-  margin-bottom: 10px;
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 5px;
   font-weight: 500;
+}
+
+.label-subtext {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.5;
+  margin-bottom: 10px;
 }
 
 .btn {
   background-color: transparent;
-  color: #adadad;
+  color: var(--text-color);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -107,24 +150,19 @@ h5 {
   font-weight: 400;
   font-family: Inter;
   border-radius: 8px;
-  transition: all 0.2s ease-in-out;
-  color: #333;
-  border: 1px solid #363636;
-}
-
-.btn span {
-  font-size: 0.92rem;
-  color: #adadad;
-  margin-left: 2px;
-}
-
-.btn i {
-  font-size: 1.1rem;
-  color: #adadad;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .btn:hover {
-  background-color: #2b2b2b;
+  background-color: var(--btn-hover-bg);
+}
+
+.btn i,
+.btn span {
+  font-size: 0.92rem;
+  color: var(--text-color);
+  opacity: 0.85;
 }
 
 .btn-group {
@@ -132,41 +170,28 @@ h5 {
   gap: 10px;
 }
 
+.btn.active {
+  border-color: #8e44ad;
+  background-color: rgba(142, 68, 173, 0.2);
+  color: #8e44ad;
+}
+
 .flag-row {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .flag-icon {
-  margin-right: 1.2rem;
   width: 40px;
   height: 40px;
-  cursor: default;
-  transition: transform 0.2s ease;
+  border-radius: 4px;
+  object-fit: cover;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Only show grab cursor in draggable-flags section */
-.draggable-flags .flag-icon {
-  cursor: grab;
-}
-
-.draggable-flags .flag-icon:active {
-  transform: scale(0.95);
-  cursor: grabbing;
-}
-
-.flag-row.toggle-flags {
-  /* margin-top: 10px; */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.flag-toggle {
+.toggle-flags .flag-toggle {
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.15s ease;
 }
 
 .flag-toggle:hover {
@@ -177,22 +202,12 @@ h5 {
   filter: brightness(40%) grayscale(70%);
 }
 
-.flag-toggle img {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  object-fit: cover;
-  transition: filter 0.2s ease;
+.draggable-flags .flag-icon {
+  cursor: grab;
 }
 
-.label-heading {
-  margin-bottom: 0;
-}
-
-.label-subtext {
-  display: block;
-  font-size: 0.8rem;
-  color: #888;
-  margin-bottom: 10px;
+.draggable-flags .flag-icon:active {
+  transform: scale(0.95);
+  cursor: grabbing;
 }
 </style>
