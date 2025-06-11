@@ -20,7 +20,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #838383;
+  color: var(--text-color);
 }
 
 /* Uncomment below when a logo is added */

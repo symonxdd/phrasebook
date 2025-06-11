@@ -1,6 +1,7 @@
 :root {
   --bg-color: #ffffff;
   --text-color: #1a1a1a;
+  --secondary-text-color: #888888;
   --card-bg: #f2f2f2;
   --border-color: #cccccc;
   --btn-hover-bg: #e2e2e2;
@@ -21,7 +22,8 @@
 /* light theme */
 .theme-light {
   --bg-color: #ffffff;
-  --text-color: #1a1a1a;
+  --text-color: #444444;
+  --secondary-text-color: #888888;
   --card-bg: #f9f9f9;
   --border-color: #dddddd;
   --btn-hover-bg: #efefef;
@@ -39,7 +41,8 @@
 /* dark theme */
 .theme-dark {
   --bg-color: #0a0a0a;
-  --text-color: #ffffff;
+  --text-color: #e4e4e4;
+  --secondary-text-color: #a5a5a5;
   --card-bg: #121212;
   --border-color: #2a2a2a;
   --btn-hover-bg: #2b2b2b;

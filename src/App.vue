@@ -52,7 +52,6 @@ async function loadTerms() {
   flex-grow: 1;
   background-color: var(--bg-color);
   color: white;
-  padding: 10px;
   overflow-y: auto;
   transition: opacity, background-color 0.3s ease;
 }
