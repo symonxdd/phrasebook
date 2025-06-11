@@ -3,10 +3,10 @@
     <TitleLogo />
 
     <ul class="nav-list">
-      <li class="nav-item" :class="{ active: $route.path === '/' }" @click="$router.push('/')">
+      <!-- <li class="nav-item" :class="{ active: $route.path === '/' }" @click="$router.push('/')">
         <i class="bi bi-house-door nav-icon"></i>
         <span class="nav-text">Home</span>
-      </li>
+      </li> -->
 
       <li class="nav-item" :class="{ active: $route.path === '/explore' }" @click="$router.push('/explore')">
         <i class="bi bi-compass nav-icon"></i>

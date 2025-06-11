@@ -27,6 +27,7 @@ pub fn run() {
       commands::queries::dashboard::get_explore_entries,
       commands::queries::common::get_all_languages,
       commands::queries::common::get_entry_stats,
+      commands::queries::fts_queries::search_explore_entries,
       paths::get_app_localappdata
     ])
     .run(tauri::generate_context!())

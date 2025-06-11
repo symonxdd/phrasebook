@@ -1,12 +1,28 @@
 <template>
   <div class="explore-page">
+
     <div class="filters">
-      <!-- Left: Entry type filters -->
-      <div class="type-filters">
-        <button v-for="type in entryTypes" :key="type"
-          :class="['filter-pill', { active: selectedTypes.includes(type) }]" @click="toggleType(type)">
-          {{ type }}
-        </button>
+      <div class="left-side">
+        <div class="search-and-types">
+
+          <div class="search-bar-wrapper">
+            <input v-model="searchQuery" @input="handleSearch" type="text" ref="searchInput" class="search-bar"
+              placeholder="Search..." spellcheck="false" />
+            <button v-if="searchQuery" @mousedown.stop.prevent @click="clearSearch" ref="clearButton"
+              class="clear-button" type="button" tabindex="-1" title="Clear">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+
+          <!-- Left: Entry type filters -->
+          <div class="type-filters">
+            <button v-for="type in entryTypes" :key="type"
+              :class="['filter-pill', { active: selectedTypes.includes(type) }]" @click="toggleType(type)">
+              {{ type }}
+            </button>
+          </div>
+
+        </div>
       </div>
 
       <div class="right-side">
@@ -76,7 +92,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { marked } from 'marked'
 import { useLanguageStore } from '../stores/languageStore'
@@ -95,6 +111,34 @@ const limit = 20
 const doneLoading = ref(false)
 const entryStats = ref({ total: 0, term: 0, sentence: 0, concept: 0 })
 const localVisibleLanguages = ref([])
+
+const searchQuery = ref('');
+const isSearching = ref(false);
+
+const searchInput = ref(null);
+const clearButton = ref(null);
+
+const onClearClick = async (event) => {
+  event.preventDefault(); // prevent unwanted form submission
+  event.stopPropagation(); // avoid triggering outer handlers
+
+  await clearSearch(); // this already waits for DOM update and refocuses
+};
+
+const clearSearch = async () => {
+  searchQuery.value = '';
+  await nextTick();
+  handleSearch();
+  searchInput.value?.focus();
+};
+
+const handleSearch = () => {
+  offset.value = 0;
+  doneLoading.value = false;
+  entries.value = [];
+  isSearching.value = !!searchQuery.value.trim();
+  loadMoreEntries(); // triggers either regular or search fetch
+};
 
 watch(() => languageStore.languages, (langs) => {
   localVisibleLanguages.value = langs.map(l => l.code)
@@ -152,18 +196,37 @@ const sortByPriority = (items) => {
 const renderMarkdown = (content) => marked.parse(content || '')
 
 const loadMoreEntries = async () => {
-  if (loading.value || doneLoading.value) return
+  if (loading.value || doneLoading.value) return;
 
-  loading.value = true
-  const result = await invoke('get_explore_entries', { offset: offset.value, limit })
-  if (result.entries.length === 0) {
-    doneLoading.value = true
-  } else {
-    entries.value.push(...result.entries)
-    offset.value += result.entries.length
+  loading.value = true;
+  let result;
+
+  const params = {
+    offset: offset.value,
+    limit,
+    search: searchQuery.value.trim(),
+    types: selectedTypes.value,
+    languages: languageStore.exploreVisibleLanguages,
+  };
+
+  try {
+    result = isSearching.value
+      ? await invoke('search_explore_entries', params)
+      : await invoke('get_explore_entries', { offset: offset.value, limit });
+  } catch (e) {
+    console.error('Failed to load entries:', e);
+    loading.value = false;
+    return;
   }
-  loading.value = false
-}
+
+  if (result.entries.length === 0) {
+    doneLoading.value = true;
+  } else {
+    entries.value.push(...result.entries);
+    offset.value += result.entries.length;
+  }
+  loading.value = false;
+};
 
 const handleScroll = () => {
   const scrollY = window.scrollY
@@ -184,10 +247,13 @@ const fetchEntryStats = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   loadMoreEntries();
   fetchEntryStats();
   window.addEventListener('scroll', handleScroll, { passive: true })
+
+  await nextTick();
+  searchInput.value?.focus();
 })
 
 onBeforeUnmount(() => {
@@ -222,6 +288,8 @@ const getFlagSrc = (code) => {
   align-items: flex-start;
   flex-wrap: wrap;
   margin-bottom: 1rem;
+
+  gap: 1rem;
 }
 
 .right-side {
@@ -241,7 +309,8 @@ const getFlagSrc = (code) => {
 
 .type-filters {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .language-filters {
@@ -286,22 +355,28 @@ const getFlagSrc = (code) => {
 }
 
 .filter-pill {
+  font-size: 0.95rem;
+  font-family: Inter;
+  height: 38px;
+  padding: 0 1rem;
   background-color: transparent;
   border: 1px solid var(--border-color);
-  padding: 0.5rem 1rem;
   border-radius: 999px;
-  color: var(--text-color);
-  opacity: 0.7;
+  color: var(--secondary-text-color);
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease-in-out;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  white-space: nowrap;
   backdrop-filter: blur(2px);
+  transition: all 0.2s ease-in-out;
 }
 
 .filter-pill:hover {
   background-color: var(--btn-hover-bg);
-  border-color: var(--border-color);
+  opacity: 1;
 }
 
 .filter-pill.active {
@@ -404,5 +479,88 @@ li:not(:last-child) {
   border-radius: 2px;
   margin-right: 0.2rem;
   filter: var(--flag-filter);
+}
+
+.search-and-types {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.search-bar-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  font-family: Inter, sans-serif;
+  height: 38px;
+  padding: 0 2.2rem 0 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--secondary-text-color);
+  outline: none;
+  transition: all 0.3s ease;
+  width: 180px;
+  max-width: 100%;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 0 0 transparent;
+}
+
+.search-bar::placeholder {
+  font-family: Inter, sans-serif;
+  color: var(--text-color);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.search-bar:hover {
+  background-color: var(--btn-hover-bg);
+  border-color: var(--border-color);
+}
+
+.search-bar:focus {
+  width: 260px;
+  background-color: var(--card-bg);
+  border-color: var(--accent-color, #409eff);
+  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.15);
+}
+
+.search-bar:focus::placeholder {
+  opacity: 0.3;
+}
+
+.clear-button {
+  position: absolute;
+  top: 50%;
+  /* Position from top */
+  transform: translateY(-50%);
+  /* Pull up by 50% of its height */
+
+  right: 1rem;
+  background: none;
+  border: none;
+  /* color: var(--text-color); */
+  color: #ff6b81;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.clear-button:hover {
+  color: var(--text-color);
+}
+
+.clear-button i {
+  transform: translateY(1px);
 }
 </style>
