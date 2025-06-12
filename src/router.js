@@ -8,6 +8,8 @@ import Favorites from "./components/Favorites.vue";
 import Explore from "./views/Explore.vue";
 
 const routes = [
+  { path: '/', redirect: '/explore' },
+
   { path: "/", component: Dashboard },
   { path: "/add", component: AddItem },
   { path: "/settings", component: Settings },

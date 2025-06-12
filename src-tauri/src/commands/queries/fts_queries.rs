@@ -41,7 +41,6 @@ pub async fn search_explore_entries(
   // Add * to the search term
   let formatted_search = format!("{}*", search);
   query = query.bind(&formatted_search).bind(limit).bind(offset);
-  // query = query.bind(&search).bind(limit).bind(offset);
 
   // 4. Run query
   let entry_ids: Vec<i64> = query
