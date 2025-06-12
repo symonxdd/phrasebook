@@ -59,14 +59,16 @@
               <i class="bi bi-cloud-arrow-up" style="margin-right: 6px;"></i>
               Add & Import
             </h5>
+            <small class="label-subtext">Add new entries manually or import at once</small>
+
             <div class="btn-group">
+              <button class="btn" @click="$router.push('/add')">
+                <i class="bi bi-plus-circle"></i>
+                <span>Add</span>
+              </button>
               <button class="btn" @click="$router.push('/import')">
                 <i class="bi bi-file-earmark-arrow-up"></i>
                 <span>Import</span>
-              </button>
-              <button class="btn" @click="$router.push('/add')">
-                <i class="bi bi-plus-circle"></i>
-                <span>Add manually</span>
               </button>
             </div>
           </div>
@@ -76,9 +78,11 @@
               <i class="bi bi-folder2-open" style="margin-right: 6px;"></i>
               Open install location
             </h5>
+            <small class="label-subtext">Where the application files are located</small>
+
             <button class="btn open-btn" @click="openAppLocalAppData">
               <i class="bi bi-folder"></i>
-              <span>Open install location</span>
+              <span>Open</span>
             </button>
           </div>
         </div>
@@ -269,8 +273,8 @@ h5.label-heading {
 }
 
 .setting-group-combined .sub-setting + .sub-setting {
-  margin-top: 10px;
-  padding-top: 9px;
+  margin-top: 15px;
+  padding-top: 15px;
   border-top: 1px dashed var(--border-color);
 }
 
