@@ -1,44 +1,44 @@
 <template>
   <div class="settings-wrapper">
-
     <div class="settings-container">
 
-      <div class="setting-group setting-group-combined">
-        <div class="sub-setting">
-          <h5 class="label-heading">
-            <i class="bi bi-flag" style="margin-right: 6px;"></i>
-            Languages shown on Explore page
-          </h5>
-          <small class="label-subtext">Click flags to toggle which languages should be visible when browsing
-            entries.</small>
-          <div class="flag-row toggle-flags">
-            <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
-              :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
-              @click="languageStore.toggleLanguageVisibility(lang.code)">
-              <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
+      <!-- Row: Language settings + Theme -->
+      <div class="settings-top-row">
+        <div class="setting-group setting-group-combined">
+          <div class="sub-setting">
+            <h5 class="label-heading">
+              <i class="bi bi-flag" style="margin-right: 6px;"></i>
+              Shown on Explore page
+            </h5>
+            <small class="label-subtext">Click flags to toggle which languages should be visible when browsing
+              entries</small>
+            <div class="flag-row toggle-flags">
+              <div v-for="lang in languageStore.languages" :key="lang.code" class="flag-toggle"
+                :class="{ inactive: !languageStore.visibleLanguages.includes(lang.code) }"
+                @click="languageStore.toggleLanguageVisibility(lang.code)">
+                <img :src="getFlagSrc(lang.code)" :alt="lang.code" class="flag-icon" />
+              </div>
             </div>
+          </div>
+
+          <div class="sub-setting draggable-flags">
+            <h5 class="label-heading">
+              <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
+              Display order
+            </h5>
+            <small class="label-subtext">Drag and drop the flags to set your preferred language display order</small>
+            <draggable :animation="200" v-model="languageStore.languages" item-key="code"
+              :component-data="{ tag: 'div', class: 'flag-row' }">
+              <template #item="{ element }">
+                <div :key="element.code">
+                  <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
+                </div>
+              </template>
+            </draggable>
           </div>
         </div>
 
-        <div class="sub-setting draggable-flags">
-          <h5 class="label-heading">
-            <i class="bi bi-list-nested" style="margin-right: 6px;"></i>
-            Language display order
-          </h5>
-          <small class="label-subtext">Drag and drop the flags to set your preferred language display order.</small>
-          <draggable :animation="200" v-model="languageStore.languages" item-key="code"
-            :component-data="{ tag: 'div', class: 'flag-row' }">
-            <template #item="{ element }">
-              <div :key="element.code">
-                <img :src="getFlagSrc(element.code)" :alt="element.code" class="flag-icon" />
-              </div>
-            </template>
-          </draggable>
-        </div>
-      </div>
-
-      <div class="responsive-settings-row">
-        <div class="setting-group">
+        <div class="setting-group theme-setting-group">
           <h5 class="label-heading">
             <i class="bi bi-palette" style="margin-right: 6px;"></i>
             Theme
@@ -52,7 +52,10 @@
               :class="{ active: themeStore.theme === 'system' }">System</button>
           </div>
         </div>
+      </div>
 
+      <!-- Row: Add & Import + Open Location -->
+      <div class="responsive-settings-row">
         <div class="setting-group setting-group-combined">
           <div class="sub-setting">
             <h5 class="label-heading">
@@ -89,18 +92,24 @@
       </div>
     </div>
 
+    <!-- Footer -->
     <div class="app-footer">
-      <div class="meta-text version">v{{ version }} <span class="env">({{ environment }})</span></div>
-      <div class="meta-text tech-links">
+      <div class="footer-section footer-left meta-text version">
+        v{{ version }} <span class="env">({{ environment }})</span>
+      </div>
+      <div class="footer-section footer-center meta-text tech-links">
         Powered by
         <a href="#" class="tauri" @click.prevent="openLink('https://v2.tauri.app/')">Tauri</a>,
         <a href="#" class="rust" @click.prevent="openLink('https://www.rust-lang.org/')">Rust</a> &
         <a href="#" class="vue" @click.prevent="openLink('https://vuejs.org/')">Vue</a>
       </div>
-      <div class="meta-text">Made with ❤️ by Symon from Belgium</div>
+      <div class="footer-section footer-right meta-text">
+        Made with ❤️ by Symon from Belgium
+      </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import draggable from 'vuedraggable'
@@ -162,26 +171,38 @@ const openAppLocalAppData = async () => {
 
 .settings-container {
   flex: 1 0 auto;
-}
-
-.settings-container {
   padding: 20px;
   color: var(--text-color);
 }
 
-.setting-group {
-  width: fit-content;
-  margin-bottom: 18px;
-  padding: 20px;
+/* Row containing languages + theme */
+.settings-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.setting-group,
+.setting-group-combined {
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border-color);
+  padding: 20px;
+  width: fit-content;
 }
 
-h5.label-heading {
+.setting-group-combined .sub-setting + .sub-setting {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.label-heading {
   font-size: 0.95rem;
-  color: var(--text-color);
   font-weight: 500;
+  color: var(--text-color);
 }
 
 .label-subtext {
@@ -199,7 +220,7 @@ h5.label-heading {
   gap: 6px;
   padding: 8px 14px;
   font-weight: 400;
-  font-family: Inter;
+  font-family: Inter, sans-serif;
   border-radius: 8px;
   border: 1px solid var(--border-color);
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -216,15 +237,16 @@ h5.label-heading {
   opacity: 0.85;
 }
 
-.btn-group {
-  display: flex;
-  gap: 10px;
-}
-
 .btn.active {
   border-color: #8e44ad;
   background-color: rgba(142, 68, 173, 0.2);
   color: #8e44ad;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .flag-row {
@@ -234,11 +256,10 @@ h5.label-heading {
 }
 
 .flag-icon {
-  display: block;
   width: 40px;
   height: 40px;
-  border-radius: 4px;
   object-fit: cover;
+  border-radius: 4px;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
@@ -263,70 +284,79 @@ h5.label-heading {
   cursor: grabbing;
 }
 
-.setting-group-combined {
-  width: fit-content;
-  max-width: 100%;
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
-}
-
-.setting-group-combined .sub-setting + .sub-setting {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px dashed var(--border-color);
-}
-
-.setting-group-combined i {
-  filter: drop-shadow(0 0 0.6px currentColor);
+.theme-setting-group {
+  align-self: flex-start;
 }
 
 .responsive-settings-row {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  margin-top: 10px;
 }
 
 .app-footer {
+  display: flex;
   width: 100%;
-  padding: 15px 10px 15px;
+  /* padding-top: 10px; */
   font-size: 0.75rem;
   color: var(--secondary-text-color);
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
-  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  position: sticky;
+  bottom: 0;
+  background: var(--background-secondary);
+  /* border-top: 1px solid var(--border-color); */
+  z-index: 10;
 }
 
-.app-footer .meta-text {
+.footer-section {
+  /* flex: 1; */
   line-height: 1.6;
+  padding: 5px;
 }
 
-.app-footer .version .env {
+/* Position helpers */
+.footer-left {
+  /* text-align: left; */
+  order: 2;
+}
+
+.footer-center {
+  /* text-align: center; */
+  order: 1;
+}
+
+.footer-right {
+  /* text-align: right; */
+  order: 3;
+}
+
+.version .env {
   opacity: 0.6;
 }
 
-.app-footer .tech-links a {
+.tech-links a {
   font-weight: 500;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
-.app-footer .tech-links a.tauri {
+.tech-links a.tauri {
   color: #18abbb;
 }
 
-.app-footer .tech-links a.rust {
-  color: #E53D1E;
+.tech-links a.rust {
+  color: #e53d1e;
 }
 
-.app-footer .tech-links a.vue {
-  color: #47BA87;
+.tech-links a.vue {
+  color: #47ba87;
 }
 
-.app-footer .tech-links a:hover {
+.tech-links a:hover {
   text-decoration: underline;
 }
 </style>
