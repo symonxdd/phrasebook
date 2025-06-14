@@ -16,7 +16,6 @@
   --nav-indicator-color: #ff5722;
 
   --scrollbar-thumb-color: #bbbbbb;
-  /* light default */
 }
 
 /* light theme */
@@ -38,7 +37,6 @@
   --nav-indicator-color: #ff5722;
 
   --scrollbar-thumb-color: #bbbbbb;
-  /* subtle, visible on light bg */
 }
 
 /* dark theme */
@@ -60,7 +58,6 @@
   --nav-indicator-color: #ff784e;
 
   --scrollbar-thumb-color: #3a3a3a;
-  /* subtle but visible on dark bg */
 }
 
 /* Scrollbar container */

@@ -95,6 +95,7 @@
 import { ref, reactive, watchEffect, onMounted } from 'vue'
 import { useLanguageStore } from '../stores/languageStore'
 import { useRouter } from 'vue-router'
+import { invoke } from '@tauri-apps/api/core'
 
 const router = useRouter()
 const languageStore = useLanguageStore()
@@ -142,12 +143,35 @@ function resetForm() {
   showGroup.value = false
 }
 
-function handleSubmit() {
-  console.log('Submitted:', {
-    type: entryType.value,
-    data: JSON.parse(JSON.stringify(form)),
-  })
-  resetForm()
+async function handleSubmit() {
+  try {
+    const payload = {
+      entry_type: entryType.value,
+      group_id: showGroup.value && form.groupId ? Number(form.groupId) : null,
+      term: entryType.value === 'term' ? selectedLangs.value.map(code => ({
+        language: code,
+        translation: form.term[code]?.translation || '',
+        definition: form.term[code]?.definition || '',
+      })) : null,
+      concept: entryType.value === 'concept' ? [
+        form.concept.markdown,
+        selectedLangs.value.map(code => ({
+          language: code,
+          title: form.concept.titles[code] || '',
+        })),
+      ] : null,
+      sentence: entryType.value === 'sentence' ? selectedLangs.value.map(code => ({
+        language: code,
+        sentence: form.sentence[code] || '',
+      })) : null,
+    }
+
+    const newId = await invoke('add_entry', payload)
+    console.log('Successfully added entry with ID:', newId)
+    resetForm()
+  } catch (err) {
+    console.error('Failed to add entry:', err)
+  }
 }
 
 const getFlagSrc = (code) => {

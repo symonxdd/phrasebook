@@ -1,6 +1,5 @@
 <template>
   <div class="explore-page">
-
     <div class="filters">
       <div class="left-side">
         <div class="search-and-types">
@@ -47,45 +46,56 @@
     </div>
 
     <div class="entries">
-      <div v-for="entry in filteredEntries" :key="entry.entry_id + '-' + entry.type" class="entry-card">
-        <template v-if="entry.type === 'term'">
-          <ul>
-            <li v-for="(t, index) in sortByPriority(entry.translations.filter(tr => isLangVisible(tr.language)))"
-              :key="t.language" class="term-item">
-              <button v-if="index === 0" class="icon-button favorite-button" @click="toggleFavorite(entry)">
-                <i class="bi" :class="entry.isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
-              </button>
+      <div v-for="entry in filteredEntries" :key="entry.entry_id + '-' + entry.type" class="entry-card-wrapper">
+        <div class="entry-icons-hover-zone"></div>
 
-              <div class="translation-line">
-                <span class="term-translation">
-                  {{ t.translation }}
-                </span>
-                <span class="term-definition">: {{ t.definition }}</span>
-              </div>
-            </li>
-          </ul>
-        </template>
+        <div class="entry-icons-wrapper">
+          <div class="entry-icons">
+            <Icon class="entry-icon-button" icon="tabler:pencil" width="20" height="20" @click="editEntry(entry)" />
+            <Icon class="entry-icon-button" icon="tabler:trash-x" width="20" height="20" @click="removeEntry(entry)" />
+          </div>
+        </div>
 
-        <template v-if="entry.type === 'sentence'">
-          <ul>
-            <li v-for="s in sortByPriority(entry.sentences.filter(st => isLangVisible(st.language)))" :key="s.language">
-              <span class="sentence">{{ s.sentence }}</span>
-            </li>
-          </ul>
-        </template>
+        <div class="entry-card">
+          <template v-if="entry.type === 'term'">
+            <ul>
+              <li v-for="(t, index) in sortByPriority(entry.translations.filter(tr => isLangVisible(tr.language)))"
+                :key="t.language" class="term-item">
+                <button v-if="index === 0" class="icon-button favorite-button" @click="toggleFavorite(entry)">
+                  <i class="bi" :class="entry.isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
+                </button>
 
-        <template v-if="entry.type === 'concept'">
-          <ul>
-            <li v-for="t in entry.titles.filter(tr => isLangVisible(tr.language))" :key="t.language">
-              <img v-if="!['en', 'pl', 'nl'].includes(t.language)" :src="getFlagSrc(t.language)" alt="flag"
-                class="flag-icon" />
-              {{ t.title }}
-            </li>
-          </ul>
-          <div class="markdown" v-html="renderMarkdown(entry.markdown_content)" />
-        </template>
+                <div class="translation-line">
+                  <span class="term-translation">
+                    {{ t.translation }}
+                  </span>
+                  <span class="term-definition">: {{ t.definition }}</span>
+                </div>
+              </li>
+            </ul>
+          </template>
+
+          <template v-if="entry.type === 'sentence'">
+            <ul>
+              <li v-for="s in sortByPriority(entry.sentences.filter(st => isLangVisible(st.language)))"
+                :key="s.language">
+                <span class="sentence">{{ s.sentence }}</span>
+              </li>
+            </ul>
+          </template>
+
+          <template v-if="entry.type === 'concept'">
+            <ul>
+              <li v-for="t in entry.titles.filter(tr => isLangVisible(tr.language))" :key="t.language">
+                <img v-if="!['en', 'pl', 'nl'].includes(t.language)" :src="getFlagSrc(t.language)" alt="flag"
+                  class="flag-icon" />
+                {{ t.title }}
+              </li>
+            </ul>
+            <div class="markdown" v-html="renderMarkdown(entry.markdown_content)" />
+          </template>
+        </div>
       </div>
-
       <div class="loading" v-if="loading">Loading more...</div>
     </div>
   </div>
@@ -96,6 +106,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { marked } from 'marked'
 import { useLanguageStore } from '../stores/languageStore'
+import { Icon } from '@iconify/vue';
 
 const languageStore = useLanguageStore();
 
@@ -118,11 +129,15 @@ const isSearching = ref(false);
 const searchInput = ref(null);
 const clearButton = ref(null);
 
-const onClearClick = async (event) => {
-  event.preventDefault(); // prevent unwanted form submission
-  event.stopPropagation(); // avoid triggering outer handlers
+const editEntry = (entry) => {
+  // your logic here
+  console.log("Editing entry:", entry);
+};
 
-  await clearSearch(); // this already waits for DOM update and refocuses
+const removeEntry = (entry) => {
+  // Your deletion logic here (confirm dialog, invoke backend, etc.)
+  console.log("Removing entry:", entry);
+  // entries.value = entries.value.filter(e => e.entry_id !== entry.entry_id || e.type !== entry.type);
 };
 
 const clearSearch = async () => {
@@ -278,7 +293,7 @@ const getFlagSrc = (code) => {
 .explore-page {
   background-color: var(--bg-color);
   color: var(--text-color);
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 3.5rem;
   font-family: 'Inter', sans-serif;
 }
 
@@ -562,5 +577,64 @@ li:not(:last-child) {
 
 .clear-button i {
   transform: translateY(1px);
+}
+
+.entry-card-wrapper {
+  position: relative;
+}
+
+.entry-icon-button {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.entry-icon-button:hover {
+  opacity: 1;
+}
+
+.entry-icons-wrapper {
+  position: absolute;
+  left: -3.4rem;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+  /* Prevent hover trapping */
+}
+
+.entry-icons {
+  display: flex;
+  gap: 0.35rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  /* Don't capture events when hidden */
+}
+
+.entry-icons-hover-zone:hover + .entry-icons-wrapper .entry-icons,
+.entry-icons-wrapper:hover .entry-icons {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.entry-icons-hover-zone {
+  position: absolute;
+  left: -6rem;
+  /* ← this controls how far to the left the hover zone extends */
+  top: -0.5rem;
+  /* extend hover area 0.5rem above */
+  bottom: -0.5rem;
+  /* extend hover area 0.5rem below */
+  width: 6rem;
+  /* ← this is the width of the hover zone */
+  z-index: 5;
+  pointer-events: auto;
 }
 </style>
