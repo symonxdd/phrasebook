@@ -1,6 +1,5 @@
 pub mod common;
-pub mod concept_queries;
-pub mod dashboard;
-pub mod fts_queries;
-pub mod sentence_queries;
-pub mod term_queries;
+pub mod get_entry_by_id;
+pub mod get_explore_entries;
+pub mod logic;
+pub mod search_explore_entries;

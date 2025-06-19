@@ -7,12 +7,14 @@ import ImportTerms from "./components/ImportTerms.vue";
 import Favorites from "./components/Favorites.vue";
 import Explore from "./views/Explore.vue";
 import AddEntry from "./components/AddEntry.vue";
+import EditEntry from "./components/EditEntry.vue";
 
 const routes = [
   { path: '/', redirect: '/explore' },
 
   // { path: "/", component: Dashboard },
   { path: "/add", component: AddEntry },
+  { path: "/edit/:entryId", component: EditEntry },
   { path: '/import', component: ImportTerms },
   { path: "/settings", component: Settings },
   { path: '/favorites', component: Favorites },

@@ -1,17 +1,12 @@
 use crate::db::get_pool;
-use crate::models::{
-  concept::ConceptTitle,
-  core::{Entry, ExploreResponse},
-  sentence::SentenceTranslation,
-  term::TermTranslation,
-};
+use crate::models::{ConceptTitle, EntryEnum, SentenceTranslation, TermTranslation};
 use sqlx::Row;
 use tauri::command;
 
 #[command(rename_all = "snake_case")]
-pub async fn get_explore_entries(offset: i64, limit: i64) -> Result<ExploreResponse, String> {
+pub async fn get_explore_entries(offset: i64, limit: i64) -> Result<Vec<EntryEnum>, String> {
   let pool = get_pool();
-  let mut entries: Vec<Entry> = Vec::new();
+  let mut entries: Vec<EntryEnum> = Vec::new();
 
   // --- Terms ---
   let term_rows = sqlx::query(
@@ -41,7 +36,7 @@ pub async fn get_explore_entries(offset: i64, limit: i64) -> Result<ExploreRespo
     let translations: Vec<TermTranslation> =
       serde_json::from_str(&translations_json).unwrap_or_default();
 
-    entries.push(Entry::Term {
+    entries.push(EntryEnum::Term {
       entry_id: row.get("entry_id"),
       group_id: row.get("group_id"),
       translations,
@@ -74,7 +69,7 @@ pub async fn get_explore_entries(offset: i64, limit: i64) -> Result<ExploreRespo
     let titles_json: String = row.get("titles");
     let titles: Vec<ConceptTitle> = serde_json::from_str(&titles_json).unwrap_or_default();
 
-    entries.push(Entry::Concept {
+    entries.push(EntryEnum::Concept {
       entry_id: row.get("entry_id"),
       group_id: row.get("group_id"),
       markdown_content: row.get("markdown_content"),
@@ -109,12 +104,12 @@ pub async fn get_explore_entries(offset: i64, limit: i64) -> Result<ExploreRespo
     let sentences: Vec<SentenceTranslation> =
       serde_json::from_str(&sentences_json).unwrap_or_default();
 
-    entries.push(Entry::Sentence {
+    entries.push(EntryEnum::Sentence {
       entry_id: row.get("entry_id"),
       group_id: row.get("group_id"),
       sentences,
     });
   }
 
-  Ok(ExploreResponse { entries })
+  Ok(entries)
 }

@@ -24,11 +24,17 @@ pub fn run() {
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
-      commands::queries::dashboard::get_explore_entries,
-      commands::queries::common::get_all_languages,
-      commands::queries::common::get_entry_stats,
-      commands::queries::fts_queries::search_explore_entries,
+      commands::queries::get_explore_entries::get_explore_entries,
+      commands::queries::common::get_all_languages::get_all_languages,
+      commands::queries::common::get_all_groups::get_all_groups,
+      commands::queries::common::get_entry_stats::get_entry_stats,
+      commands::queries::get_entry_by_id::get_entry_by_id,
+      commands::queries::search_explore_entries::search_explore_entries,
       commands::mutations::add_entry::add_entry,
+      commands::mutations::edit_term::edit_term,
+      commands::mutations::edit_sentence::edit_sentence,
+      commands::mutations::edit_concept::edit_concept,
+      commands::mutations::delete_entry::delete_entry,
       paths::get_app_localappdata
     ])
     .run(tauri::generate_context!())

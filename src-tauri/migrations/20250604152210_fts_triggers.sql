@@ -94,3 +94,8 @@ CREATE TRIGGER trg_delete_sentence_translation AFTER DELETE ON sentence_translat
 BEGIN
     DELETE FROM entry_fts WHERE entry_id = OLD.sentence_id AND language_code = OLD.language_code;
 END;
+
+CREATE TRIGGER trg_delete_entry_cleanup AFTER DELETE ON entry
+BEGIN
+    DELETE FROM entry_fts WHERE entry_id = OLD.id;
+END;

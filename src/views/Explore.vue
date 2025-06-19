@@ -16,11 +16,10 @@
           <!-- Left: Entry type filters -->
           <div class="type-filters">
             <button v-for="type in entryTypes" :key="type"
-              :class="['filter-pill', { active: selectedTypes.includes(type) }]" @click="toggleType(type)">
+              :class="['filter-pill', { active: selectedTypes.includes(type) }]" @click="(e) => toggleType(type, e)">
               {{ type }}
             </button>
           </div>
-
         </div>
       </div>
 
@@ -51,8 +50,10 @@
 
         <div class="entry-icons-wrapper">
           <div class="entry-icons">
-            <Icon class="entry-icon-button" icon="tabler:pencil" width="20" height="20" @click="editEntry(entry)" />
-            <Icon class="entry-icon-button" icon="tabler:trash-x" width="20" height="20" @click="removeEntry(entry)" />
+            <Icon class="entry-icon-button" icon="tabler:pencil" width="20" height="20"
+              @click="editEntry(entry.entry_id)" />
+            <Icon class="entry-icon-button" icon="tabler:trash-x" width="20" height="20"
+              @click="requestDeleteEntry(entry.entry_id)" />
           </div>
         </div>
 
@@ -99,6 +100,10 @@
       <div class="loading" v-if="loading">Loading more...</div>
     </div>
   </div>
+
+  <ConfirmModal v-if="showConfirmModal" message="Are you sure you want to delete this entry?" @confirm="confirmDelete"
+    @cancel="cancelDelete" />
+
 </template>
 
 <script setup>
@@ -106,15 +111,22 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { marked } from 'marked'
 import { useLanguageStore } from '../stores/languageStore'
+import { useEntryFilterStore } from '../stores/entryFilterStore'
 import { Icon } from '@iconify/vue';
+import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia'
+import ConfirmModal from '../components/ConfirmModal.vue'
 
-const languageStore = useLanguageStore();
+const router = useRouter();
+
+const languageStore = useLanguageStore()
+const entryFilterStore = useEntryFilterStore()
+const { selectedTypes } = storeToRefs(entryFilterStore)
 
 // Use localVisible for checking visibility in the UI
 const isLangVisible = (code) => languageStore.exploreVisibleLanguages.includes(code);
 
 const entryTypes = ['term', 'sentence', 'concept']
-const selectedTypes = ref(['term'])
 const entries = ref([])
 const loading = ref(false)
 const offset = ref(0)
@@ -129,16 +141,34 @@ const isSearching = ref(false);
 const searchInput = ref(null);
 const clearButton = ref(null);
 
-const editEntry = (entry) => {
-  // your logic here
-  console.log("Editing entry:", entry);
-};
+const showConfirmModal = ref(false)
+const pendingDeleteEntryId = ref(null)
 
-const removeEntry = (entry) => {
-  // Your deletion logic here (confirm dialog, invoke backend, etc.)
-  console.log("Removing entry:", entry);
-  // entries.value = entries.value.filter(e => e.entry_id !== entry.entry_id || e.type !== entry.type);
-};
+const requestDeleteEntry = (entry_id) => {
+  pendingDeleteEntryId.value = entry_id
+  showConfirmModal.value = true
+}
+
+const cancelDelete = () => {
+  showConfirmModal.value = false
+  pendingDeleteEntryId.value = null
+}
+
+const confirmDelete = async () => {
+  try {
+    await invoke('delete_entry', { payload: { entry_id: pendingDeleteEntryId.value } })
+    entries.value = entries.value.filter(e => e.entry_id !== pendingDeleteEntryId.value)
+    console.log(`Entry ${pendingDeleteEntryId.value} deleted`)
+  } catch (e) {
+    console.error('Delete failed:', e)
+  } finally {
+    cancelDelete()
+  }
+}
+
+const editEntry = (entry_id) => {
+  router.push({ path: `/edit/${entry_id}` });
+}
 
 const clearSearch = async () => {
   searchQuery.value = '';
@@ -164,11 +194,23 @@ const toggleFavorite = (entry) => {
   console.log(`Toggled favorite for entry ${entry.entry_id}: ${entry.isFavorite}`);
 }
 
-const toggleType = (type) => {
-  if (selectedTypes.value.includes(type)) {
-    selectedTypes.value = selectedTypes.value.filter((t) => t !== type)
+const toggleType = (type, event) => {
+  const isCtrlPressed = event.ctrlKey || event.metaKey
+  const types = selectedTypes.value
+  const index = types.indexOf(type)
+
+  // If trying to deselect and it's the only one selected → prevent it
+  if (index !== -1 && types.length === 1) {
+    return // Do nothing; can't unselect the last one
+  }
+
+  if (index !== -1) {
+    types.splice(index, 1)
   } else {
-    selectedTypes.value.push(type)
+    if (!isCtrlPressed) {
+      types.splice(0, types.length) // Clear all
+    }
+    types.push(type)
   }
 }
 
@@ -220,7 +262,7 @@ const loadMoreEntries = async () => {
     offset: offset.value,
     limit,
     search: searchQuery.value.trim(),
-    types: selectedTypes.value,
+    types: selectedTypes,
     languages: languageStore.exploreVisibleLanguages,
   };
 
@@ -234,11 +276,11 @@ const loadMoreEntries = async () => {
     return;
   }
 
-  if (result.entries.length === 0) {
+  if (result.length === 0) {
     doneLoading.value = true;
   } else {
-    entries.value.push(...result.entries);
-    offset.value += result.entries.length;
+    entries.value.push(...result);
+    offset.value += result.length;
   }
   loading.value = false;
 };

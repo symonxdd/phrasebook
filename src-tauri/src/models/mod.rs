@@ -1,10 +1,5 @@
-pub mod concept;
-pub mod core;
-pub mod sentence;
-pub mod term;
+pub mod dto;
+pub mod entry;
 
-// Re-export useful structs for convenience
-pub use concept::ConceptTitle;
-pub use core::{Entry, ExploreResponse};
-pub use sentence::SentenceTranslation;
-pub use term::TermTranslation;
+pub use dto::*;
+pub use entry::*; // Re-export everything from entry

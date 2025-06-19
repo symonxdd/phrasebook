@@ -1,7 +1,8 @@
 use crate::db::get_pool;
-use serde::{Deserialize, Serialize};
 use sqlx::Row;
 use tauri::command;
+
+use crate::models::{ConceptTitle, SentenceTranslation, TermTranslation};
 
 #[command(rename_all = "snake_case")]
 pub async fn add_entry(
@@ -105,31 +106,4 @@ pub async fn add_entry(
 
   // Return the entry_id
   Ok(entry_id)
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct TermTranslation {
-  pub translation: String,
-  pub definition: String,
-  pub language: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ConceptTitle {
-  pub title: String,
-  pub language: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SentenceTranslation {
-  pub sentence: String,
-  pub language: String,
-}
-
-// Optional: Define a wrapper struct for easier passing from frontend
-#[derive(Debug, Serialize, Deserialize)]
-pub struct NewEntry {
-  pub term_translations: Vec<TermTranslation>,
-  pub concept_titles: Vec<ConceptTitle>,
-  pub sentence_translations: Vec<SentenceTranslation>,
 }

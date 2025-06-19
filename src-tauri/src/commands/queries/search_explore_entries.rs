@@ -1,5 +1,5 @@
 use crate::db::get_pool;
-use crate::models::{ConceptTitle, Entry, ExploreResponse, SentenceTranslation, TermTranslation};
+use crate::models::{ConceptTitle, EntryEnum, SentenceTranslation, TermTranslation};
 use sqlx::Row;
 use tauri::command;
 
@@ -10,9 +10,9 @@ pub async fn search_explore_entries(
   search: String,
   types: Vec<String>,
   languages: Vec<String>,
-) -> Result<ExploreResponse, String> {
+) -> Result<Vec<EntryEnum>, String> {
   let pool = get_pool();
-  let mut entries: Vec<Entry> = Vec::new();
+  let mut entries: Vec<EntryEnum> = Vec::new();
 
   // 1. Build placeholders like "?, ?, ?, ..."
   let type_placeholders = vec!["?"; types.len()].join(",");
@@ -78,7 +78,7 @@ pub async fn search_explore_entries(
         })
         .collect();
 
-        entries.push(Entry::Term {
+        entries.push(EntryEnum::Term {
           entry_id: id,
           group_id,
           translations,
@@ -100,7 +100,7 @@ pub async fn search_explore_entries(
         })
         .collect();
 
-        entries.push(Entry::Sentence {
+        entries.push(EntryEnum::Sentence {
           entry_id: id,
           group_id,
           sentences,
@@ -129,7 +129,7 @@ pub async fn search_explore_entries(
             })
             .collect();
 
-        entries.push(Entry::Concept {
+        entries.push(EntryEnum::Concept {
           entry_id: id,
           group_id,
           markdown_content,
@@ -141,5 +141,5 @@ pub async fn search_explore_entries(
     }
   }
 
-  Ok(ExploreResponse { entries })
+  Ok(entries)
 }
