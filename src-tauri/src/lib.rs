@@ -35,6 +35,9 @@ pub fn run() {
       commands::mutations::edit_sentence::edit_sentence,
       commands::mutations::edit_concept::edit_concept,
       commands::mutations::delete_entry::delete_entry,
+      commands::mutations::add_term::add_term,
+      commands::mutations::add_sentence::add_sentence,
+      commands::mutations::add_concept::add_concept,
       paths::get_app_localappdata
     ])
     .run(tauri::generate_context!())
