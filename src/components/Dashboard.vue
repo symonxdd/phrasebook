@@ -92,7 +92,7 @@ async function navigateToTerms(name, type) {
   const routeParams = { name: "terms-view", query: { name, type } };
 
   try {
-    const terms = await invoke("load_terms_by_" + type, { name });
+    const terms = await invoke("load_terms_by_" + type + "_command", { name });
 
     router.push(routeParams);
     searchResults.value = terms;
@@ -107,7 +107,7 @@ async function performSearch() {
     return;
   }
 
-  const results = await invoke("search_terms", { query: searchQuery.value });
+  const results = await invoke("search_terms_command", { query: searchQuery.value });
 
   searchResults.value = results;
 

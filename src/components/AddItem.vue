@@ -56,7 +56,7 @@ const groups = ref([]);
 
 async function addTerm() {
   try {
-    await invoke('save_term', { term: newTerm.value });
+    await invoke('save_term_command', { term: newTerm.value });
     console.log('Term added successfully:', newTerm.value);
     emit('term-added');
   } catch (error) {
@@ -68,15 +68,15 @@ async function addTerm() {
 
 async function createNewGroup() {
   if (newGroupName.value.trim() !== '') {
-    await invoke('save_group', { group: { title: newGroupName.value.trim() } })
-    groups.value = await invoke('load_groups')
+    await invoke('save_group_command', { group: { title: newGroupName.value.trim() } })
+    groups.value = await invoke('load_groups_command')
     newTerm.value.category = newGroupName.value.trim()
     newGroupName.value = ''
   }
 }
 
 onMounted(async () => {
-  groups.value = await invoke('load_groups')
+  groups.value = await invoke('load_groups_command')
 })
 </script>
 

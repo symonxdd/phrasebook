@@ -58,7 +58,7 @@ function updateCols() {
 onMounted(async () => {
   const { name, type } = route.query;
   if (name && type) {
-    terms.value = await invoke("load_terms_by_" + type, { name });
+    terms.value = await invoke("load_terms_by_" + type + "_command", { name });
   }
 
   window.addEventListener("resize", updateCols);

@@ -156,7 +156,7 @@ const getFlagSrc = (code) => {
 }
 
 const openAppLocalAppData = async () => {
-  const path = await invoke('get_app_localappdata')
+  const path = await invoke('get_app_localappdata_command')
   await revealItemInDir(`${path}/`)
 }
 </script>

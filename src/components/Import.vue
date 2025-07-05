@@ -25,7 +25,7 @@ async function importEntries() {
     }
 
     for (const entry of parsed) {
-      await invoke('add_entry', {
+      await invoke('add_entry_command', {
         entryType: entry.type,
         groupId: entry.group_id ?? null,
         term: entry.type === 'term' ? entry.term : null,

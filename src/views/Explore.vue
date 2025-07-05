@@ -156,7 +156,7 @@ const cancelDelete = () => {
 
 const confirmDelete = async () => {
   try {
-    await invoke('delete_entry', { payload: { entry_id: pendingDeleteEntryId.value } })
+    await invoke('delete_entry_command', { payload: { entry_id: pendingDeleteEntryId.value } })
     entries.value = entries.value.filter(e => e.entry_id !== pendingDeleteEntryId.value)
     console.log(`Entry ${pendingDeleteEntryId.value} deleted`)
   } catch (e) {
@@ -262,14 +262,14 @@ const loadMoreEntries = async () => {
     offset: offset.value,
     limit,
     search: searchQuery.value.trim(),
-    types: selectedTypes,
+    types: selectedTypes.value,
     languages: languageStore.exploreVisibleLanguages,
   };
 
   try {
     result = isSearching.value
-      ? await invoke('search_explore_entries', params)
-      : await invoke('get_explore_entries', { offset: offset.value, limit });
+      ? await invoke('search_explore_entries_command', params)
+      : await invoke('get_explore_entries_command', { offset: offset.value, limit });
   } catch (e) {
     console.error('Failed to load entries:', e);
     loading.value = false;
@@ -297,7 +297,7 @@ const handleScroll = () => {
 
 const fetchEntryStats = async () => {
   try {
-    const stats = await invoke('get_entry_stats')
+    const stats = await invoke('get_entry_stats_command')
     entryStats.value = stats
   } catch (e) {
     console.error('Failed to fetch entry stats:', e)

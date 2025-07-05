@@ -1,0 +1,19 @@
+[package]
+name = "phrasebook_core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio-native-tls"] }
+tokio = { version = "1.44", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+regex = "1.11.1"
+dirs = "6.0.0"
+serde_json = "1"
+
+# Optional: only required if you want core logic to *optionally* use Tauri
+tauri = { version = "2", optional = true }
+
+[features]
+default = []
+tauri-integration = ["tauri"]  # more on this below

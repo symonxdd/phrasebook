@@ -71,7 +71,7 @@ const groups = ref([])
 
 const fetchGroups = async () => {
   try {
-    groups.value = await invoke('get_all_groups')
+    groups.value = await invoke('get_all_groups_command')
   } catch (err) {
     console.error('Failed to fetch groups:', err)
   }
@@ -101,7 +101,7 @@ const handleSubmit = async () => {
         definition: form.term[code]?.definition || '',
       })),
     }
-    await invoke('edit_term', { payload })
+    await invoke('edit_term_command', { payload })
     router.push('/explore')
   } catch (err) {
     console.error('Failed to update term:', err)

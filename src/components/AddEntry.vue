@@ -166,7 +166,7 @@ async function handleSubmit() {
       })) : null,
     }
 
-    const newId = await invoke('add_entry', payload)
+    const newId = await invoke('add_entry_command', payload)
     console.log('Successfully added entry with ID:', newId)
     resetForm()
   } catch (err) {

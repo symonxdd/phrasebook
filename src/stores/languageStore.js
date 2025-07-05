@@ -13,7 +13,7 @@ export const useLanguageStore = defineStore('language', () => {
     const savedVisibility = localStorage.getItem('visibleLanguages')
     const savedExploreVisibility = localStorage.getItem('exploreVisibleLanguages')
 
-    const result = await invoke('get_all_languages')
+    const result = await invoke('get_all_languages_command')
 
     let sorted = result
     if (savedOrder) {

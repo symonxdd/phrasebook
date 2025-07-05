@@ -37,7 +37,7 @@ const currentEditor = computed(() => {
 async function fetchEntry() {
   try {
     error.value = null
-    entryData.value = await invoke('get_entry_by_id', { entry_id: entryId })
+    entryData.value = await invoke('get_entry_by_id_command', { entry_id: entryId })
     entryType.value = entryData.value.type
   } catch (e) {
     error.value = e.toString()
