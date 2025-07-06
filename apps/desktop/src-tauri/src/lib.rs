@@ -1,10 +1,7 @@
 mod commands; // local Tauri command wrappers
-use phrasebook_core::init_db; // imported from the shared `core` crate
-// mod db;
-// mod models;
 mod paths;
 
-// use db::init_db;
+use phrasebook_core::init_db; // imported from the shared `core` crate
 use tauri::Manager;
 use tauri::async_runtime::block_on;
 
