@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "core",
-  "apps/desktop/src-tauri"
+  "apps/desktop/src-tauri",
+  "apps/mobile/rust"
 ]
 resolver = "2"
